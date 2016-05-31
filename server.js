@@ -12,7 +12,9 @@
 
 
 var express = require('express');
+// var bodyParser = require("body-parser"); 
 var app = express();
+// app.use(bodyParser.urlencoded({ extended: false }));  
 
 app.get('/', function (req, res) {
    console.log("主页 GET 请求");
@@ -29,6 +31,26 @@ app.get('/download',function(req,res,next){
   console.log("下载 请求");
   res.download(filePath,'autoupdate.apk');
 });
+
+app.get('/test', function (req, res) {
+   console.log("测试 请求");
+   res.send('兔宝宝是🐷！');
+})
+
+app.get('/login', function (req, res) {
+   console.log("登录 请求");
+   var username = req.query.username;
+   var password = req.query.password;
+
+   if (username == "admin" && password == "123") {
+   	res.send('登录成功');
+   } else {
+   	res.send('用户名密码错误');
+   }
+
+   
+})
+
 
 var server = app.listen(8081, function () {
 
