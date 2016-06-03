@@ -12,9 +12,11 @@
 
 
 var express = require('express');
-// var bodyParser = require("body-parser"); 
 var app = express();
-// app.use(bodyParser.urlencoded({ extended: false }));  
+
+var serverVersion = 1.2;
+var forceToUpdate = false;
+var versionJSON = {version: serverVersion, forceToUpdate: forceToUpdate};
 
 app.get('/', function (req, res) {
    console.log("主页 GET 请求");
@@ -23,7 +25,8 @@ app.get('/', function (req, res) {
 
 app.get('/version', function (req, res) {
    console.log("版本 请求");
-   res.send('{"version" : 1.1, "forceToUpdate": false}');
+   res.send(JSON.stringify(versionJSON))
+   // res.send('{"version" : 1.1, "forceToUpdate": false}');
 })
 
 app.get('/download',function(req,res,next){
@@ -31,11 +34,6 @@ app.get('/download',function(req,res,next){
   console.log("下载 请求");
   res.download(filePath,'autoupdate.apk');
 });
-
-app.get('/test', function (req, res) {
-   console.log("测试 请求");
-   res.send('兔宝宝是🐷！');
-})
 
 app.get('/login', function (req, res) {
    console.log("登录 请求");
@@ -46,17 +44,13 @@ app.get('/login', function (req, res) {
    	res.send('登录成功');
    } else {
    	res.send('用户名密码错误');
-   }
+   } 
 
-   
 })
 
 
 var server = app.listen(8081, function () {
-
   var host = server.address().address
   var port = server.address().port
-
   console.log("应用实例，访问地址为 http://%s:%s", host, port)
-
 })
