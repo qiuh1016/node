@@ -4,7 +4,10 @@ var app = express();
 var serverVersion = 1.2;
 var forceToUpdate = false;
 var dbTestID = "";
-var versionJSON;
+var versionJSON = {
+            version       : serverVersion, 
+            forceToUpdate : forceToUpdate
+          };
 
 //db
 var mysql = require('mysql');
@@ -64,18 +67,59 @@ app.get('/download',function(req,res,next){
   res.download(filePath,'autoupdate.apk');
 });
 
-app.get('/add',function(req,res,next) {
-	console.log("add 请求");
-	conn.query(insertSQL, function (err, res1) {
+
+app.get('/add', function (req, res) {
+   console.log("add 请求");
+   var name = req.query.name;
+
+   if (name != null) {
+    insertSQL = 'insert into t_user(name) values("' + name +'")';
+    conn.query(insertSQL, function (err, res1) {
         if (err) {
-        	console.log(err);
-        	res.send(err);
+          console.log(err);
+          res.send(err);
         } else {
-        	res.send(res1);
+          res.send(res1);
         }
     });
+  }
+
 })
 
+app.get('/delete', function (req, res) {
+  console.log("delete 请求");
+  var id = req.query.id;
+  var name = req.query.name
+  if (id != null && name != null) {
+    res.send("请只输入一个参数");
+    return;
+  }
+
+  if (id != null) {
+    var SQL = 'delete from t_user where id= "' + id +'"';
+    conn.query(SQL, function (err, res1) {
+        if (err) {
+          console.log(err);
+          res.send(err);
+        } else {
+          res.send(res1);
+        }
+    });
+  } else if (name != null) {
+    var SQL = 'delete from t_user where name= "' + name +'"';
+    conn.query(SQL, function (err, res1) {
+        if (err) {
+          console.log(err);
+          res.send(err);
+        } else {
+          res.send(res1);
+        }
+    });
+  }
+
+})
+
+ 
 app.get('/login', function (req, res) {
    console.log("登录 请求");
    var username = req.query.username;
