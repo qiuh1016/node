@@ -133,6 +133,15 @@ app.get('/login', function (req, res) {
 
 })
 
+app.get('/test', function (req, res) {
+   
+   // res.send('<h2>用户名密码错误</h2>');
+   res.sendFile('/Users/qiuhong/Desktop/node/qq.png');
+   console.log('\ntest 请求:');
+   console.log(req.headers);
+
+})
+
 
 var server = app.listen(8081, function () {
   var host = server.address().address
