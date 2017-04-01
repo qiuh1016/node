@@ -52,8 +52,8 @@ function add() {
 
 app.get('/', function (req, res) {
    console.log("主页 GET 请求");
-   res.send('Hello GET');
-})
+   res.sendFile('/Users/qiuhong/Desktop/node/http/index.html');
+ })
 
 app.get('/version', function (req, res) {
    console.log("版本 请求");
@@ -142,6 +142,27 @@ app.get('/test', function (req, res) {
 
 })
 
+app.get('/get', function (req, res) {
+   
+   conn.query(selectSQL, function (err, rows) {
+      if (err) console.log(err);
+
+      var json = "[";
+      var jsonOne = ";"
+      console.log("SELECT ==> ");
+      for (var i in rows) {
+          jsonOne = {
+              id : rows[i]['id'],
+              name : rows[i]['name'],
+              create_date : rows[i]['create_date'],
+          }
+          json = json + jsonOne + ","
+      }
+      json = json + "]"
+      res.send(jsonOne);
+  });
+
+})
 
 var server = app.listen(8081, function () {
   var host = server.address().address
