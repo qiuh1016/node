@@ -85,10 +85,12 @@ app.get('/report_submit', function (req, res) {
       conn.query(insertSQL, function (err, res1) {
         if (err) {
           console.log(err);
-          res.send(err);
+          // res.send(err);
+          res.sendFile(__dirname + '/http/submit_failed.html');
         } else {
           // res.send(res1);
-          res.send("提交成功！")
+          // res.send("提交成功！")
+          res.sendFile(__dirname + '/http/submit_succeed.html');
         }
     });
    }
