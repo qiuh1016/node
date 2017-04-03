@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+app.use(express.static('http'));
+app.use(express.static('h5'));
 
 var serverVersion = 1.2;
 var forceToUpdate = false;
@@ -52,7 +54,44 @@ function add() {
 
 app.get('/', function (req, res) {
    console.log("主页 GET 请求");
-   res.sendFile('/Users/qiuhong/Desktop/node/http/index.html');
+   res.send("巧宝宝要乖乖的哟");
+ })
+
+app.get('/submit', function (req, res) {
+   console.log("submit GET 请求");
+   res.sendFile(__dirname + '/http/index.html');
+   // res.sendFile(__dirname + '/h5/default.htm');
+ })
+
+app.get('/report_submit', function (req, res) {
+   console.log("report_submit GET 请求");
+   var project = req.query.project;
+   var submitter = req.query.submitter;
+   var importance = req.query.importance;
+   var completed = req.query.completed;
+   var issures = req.query.issures;
+   var plan = req.query.plan;
+
+   if (project == "" || submitter == "") {
+      res.send('项目代号和提交者不能为空！'); 
+   } else {
+      insertSQL = 'INSERT INTO week_reports SET ';
+      insertSQL = insertSQL + 'project = "'+project+'",';
+      insertSQL = insertSQL + 'submitter = "'+submitter+'",';
+      insertSQL = insertSQL + 'importance = "'+importance+'",';
+      insertSQL = insertSQL + 'completed = "'+completed+'",';
+      insertSQL = insertSQL + 'issures = "'+issures+'",';
+      insertSQL = insertSQL + 'plan = "'+plan+'";';
+      conn.query(insertSQL, function (err, res1) {
+        if (err) {
+          console.log(err);
+          res.send(err);
+        } else {
+          // res.send(res1);
+          res.send("提交成功！")
+        }
+    });
+   }
  })
 
 app.get('/version', function (req, res) {
