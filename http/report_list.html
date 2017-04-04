@@ -40,7 +40,7 @@
 	window.onload = function() {
 		var list = document.getElementById('ul');
 		list.innerHTML = "";
-		var _url = '/get';
+		var _url = '/getReports';
 		mui.getJSON(_url, {num: 2}, function(data) {
 				//获得服务器响应
 				dataJson = data;

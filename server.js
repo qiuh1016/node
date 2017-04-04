@@ -50,7 +50,6 @@ function add() {
     });
 }
 
-//select();
 
 app.get('/', function (req, res) {
    console.log("主页 GET 请求");
@@ -183,7 +182,7 @@ app.get('/test', function (req, res) {
 
 })
 
-app.get('/get', function (req, res) {
+app.get('/getReports', function (req, res) {
   var id = req.query.id;
   selectSQL = 'select * from week_reports'; //where `No.` = ' + id;
    
@@ -196,7 +195,7 @@ app.get('/get', function (req, res) {
 
 })
 
-app.get('/getLast', function (req, res) {
+app.get('/getLastReports', function (req, res) {
   var num = req.query.num;
   selectSQL = 'select * from week_reports ORDER BY "add_time" DESC LIMIT ' + num; //where `No.` = ' + id;
    
