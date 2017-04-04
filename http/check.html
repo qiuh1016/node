@@ -10,6 +10,7 @@
       	mui.init({
       		swipeBack: true;
       	});
+      	
     </script>
 </head>
 <body>
@@ -20,45 +21,48 @@
 	</header>
 	
 	<div class="mui-content">
-		<br>
-		<form action="/report_submit" method="GET">
-			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
-				<p>*项目代号：</p>
-				<input type="text" name="project" class="mui-input-clear" >
-			</div>
-			
-			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
-				<p>*提交人：</p>
-				<input type="text" name="submitter" class="mui-input-clear">
-			</div>
-			
-			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
-				<p>本周要重点报告的工作：</p>
-				<textarea type="text" name="importance" class="mui-input-clear"></textarea>
-			</div>
-			
-			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
-				<p>本周日常工作完成情况：</p>
-				<textarea type="text" name="completed" class="mui-input-clear"></textarea>
-			</div>
-			
-			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
-				<p>存在的问题：</p>
-				<textarea type="text" name="issures" class="mui-input-clear"></textarea>
-			</div>
-			
-			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
-				<p>下周重点工作计划：</p>
-				<textarea type="text" name="plan" class="mui-input-clear"></textarea>
-			</div>
-	
-			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
-				<button type="submit" class="mui-btn mui-btn-primary mui-btn-block">提交</button>
-			</div>
-			<br>
-			
-		</form>
+		<div class="mui-card" style="margin-bottom: 35px;">
+			<ul class="mui-table-view" id="ul">
+				<!--<li class='mui-table-view-cell' onclick="click(1)"><a class='mui-navigate-right'>Item1</a></li>
+				<li class="mui-table-view-cell">Item 2</li>
+				<li class="mui-table-view-cell">Item 3</li>-->
+			</ul>
+		</div>
 	</div>
+	
+	<button type="button" class="mui-btn mui-btn-blue mui-btn-block" id="button" onclick="check()">查询</button>
+	<p id="detail"></p>
+	
+	<script type="text/javascript" charset="utf-8">
 
+		var dataJson;
+	
+		function check() {
+			document.getElementById('ul').innerHTML = "";
+			var _url = '/get';
+			mui.getJSON(_url, {id: 21}, function(data) {
+					//获得服务器响应
+					dataJson = data;
+					for (var i in data) {
+						
+						var submitter = data[i]['submitter'];
+						var timesamp = data[i]['add_time'];
+						
+						document.getElementById('ul').innerHTML += 
+							"<li class='mui-table-view-cell' onclick='showDetail("+ i +")'>" + 
+							"<a class='mui-navigate-right'>" +
+							submitter + "(" + timesamp + ")" 
+							"</a></li>";
+					}
+				
+				}
+			);
+		}
+		
+		function showDetail(i) {
+			document.getElementById('detail').innerHTML = JSON.stringify(dataJson[i]);
+		}
+
+    </script>
 </body>
 </html>

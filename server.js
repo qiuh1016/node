@@ -103,7 +103,7 @@ app.get('/version', function (req, res) {
 })
 
 app.get('/download',function(req,res,next){
-  var filePath = '/Users/qiuhong/Desktop/node/app-release.apk';
+  var filePath = __dirname + '/app-release.apk';
   console.log("下载 请求");
   res.download(filePath,'autoupdate.apk');
 });
@@ -184,23 +184,22 @@ app.get('/test', function (req, res) {
 })
 
 app.get('/get', function (req, res) {
+  var id = req.query.id;
+  selectSQL = 'select * from week_reports'; //where `No.` = ' + id;
    
-   conn.query(selectSQL, function (err, rows) {
+  conn.query(selectSQL, function (err, rows) {
       if (err) console.log(err);
-
-      var json = "[";
-      var jsonOne = ";"
       console.log("SELECT ==> ");
-      for (var i in rows) {
-          jsonOne = {
-              id : rows[i]['id'],
-              name : rows[i]['name'],
-              create_date : rows[i]['create_date'],
-          }
-          json = json + jsonOne + ","
-      }
-      json = json + "]"
-      res.send(jsonOne);
+      console.log(rows);
+      // for (var i in rows) {
+      //     jsonOne = {
+      //         id : rows[i]['id'],
+      //         name : rows[i]['name'],
+      //         create_date : rows[i]['create_date'],
+      //     };
+  
+      // }
+      res.send(rows);
   });
 
 })
