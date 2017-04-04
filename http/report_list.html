@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init({
+      		swipeBack: true;
+      	});
+      	
+    </script>
+</head>
+<body>
+	
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">周报查看</h1>
+	</header>
+	
+	<div class="mui-content">
+		<div class="mui-card" style="margin-bottom: 35px;">
+			<ul class="mui-table-view" id="ul">
+				<!--<li class='mui-table-view-cell' onclick="click(1)"><a class='mui-navigate-right'>Item1</a></li>
+				<li class="mui-table-view-cell">Item 2</li>
+				<li class="mui-table-view-cell">Item 3</li>-->
+			</ul>
+		</div>
+	</div>
+
+	<textarea id="detail" readonly="readonly" style="height: 300px; font-size: 13px; color: #555555;"></textarea>
+</body>
+
+<script type="text/javascript" charset="utf-8">
+		
+	var dataJson;
+	
+	window.onload = function() {
+		var list = document.getElementById('ul');
+		list.innerHTML = "";
+		var _url = '/get';
+		mui.getJSON(_url, {num: 2}, function(data) {
+				//获得服务器响应
+				dataJson = data;
+				for (var i in data) {
+					
+					var project = data[i]['project'];
+					var submitter = data[i]['submitter'];
+					var add_time = data[i]['add_time'];
+					
+					list.innerHTML += 
+						"<li class='mui-table-view-cell' onclick='showDetail("+ i +")'>" + 
+						"<a class='mui-navigate-right'>" +
+						project + "  -  " + submitter + "  -  " + add_time +
+						"</a></li>";
+				}
+			
+			}
+		);
+	};
+	
+	function showDetail(i) {
+		document.getElementById('detail').innerHTML = 
+		"项目代号：" + dataJson[i]['project'] + "\n" +
+		"提交人：" + dataJson[i]['submitter'] + "\n" +
+		"提交时间：" + dataJson[i]['add_time'] + "\n\n" +
+		"本周要重点报告的工作：\n" + dataJson[i]['importance'] + "\n\n" +
+		"本周日常工作完成情况：\n" + dataJson[i]['completed'] + "\n\n" +
+		"存在的问题：\n" + dataJson[i]['issures'] + "\n\n" +
+		"下周重点这个计划：\n" + dataJson[i]['plan'];
+	}
+
+</script>
+</html>

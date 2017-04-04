@@ -54,7 +54,7 @@ function add() {
 
 app.get('/', function (req, res) {
    console.log("主页 GET 请求");
-   res.send("巧宝宝要乖乖的哟");
+   // res.send("巧宝宝要乖乖的哟");
  })
 
 app.get('/submit', function (req, res) {
@@ -191,14 +191,19 @@ app.get('/get', function (req, res) {
       if (err) console.log(err);
       console.log("SELECT ==> ");
       console.log(rows);
-      // for (var i in rows) {
-      //     jsonOne = {
-      //         id : rows[i]['id'],
-      //         name : rows[i]['name'],
-      //         create_date : rows[i]['create_date'],
-      //     };
-  
-      // }
+      res.send(rows);
+  });
+
+})
+
+app.get('/getLast', function (req, res) {
+  var num = req.query.num;
+  selectSQL = 'select * from week_reports ORDER BY "add_time" DESC LIMIT ' + num; //where `No.` = ' + id;
+   
+  conn.query(selectSQL, function (err, rows) {
+      if (err) console.log(err);
+      console.log("getLast ==> ");
+      console.log(rows);
       res.send(rows);
   });
 
