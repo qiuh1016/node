@@ -28,9 +28,12 @@
 				<li class="mui-table-view-cell">Item 3</li>-->
 			</ul>
 		</div>
+
+		<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+			<textarea id="detail" readonly="readonly" style="height: 300px; font-size: 13px; color: #555555;"></textarea>
+		</div>
 	</div>
 
-	<textarea id="detail" readonly="readonly" style="height: 300px; font-size: 13px; color: #555555;"></textarea>
 </body>
 
 <script type="text/javascript" charset="utf-8">
@@ -48,7 +51,7 @@
 					
 					var project = data[i]['project'];
 					var submitter = data[i]['submitter'];
-					var add_time = data[i]['add_time'];
+					var add_time = makeDate(data[i]['add_time']);
 					
 					list.innerHTML += 
 						"<li class='mui-table-view-cell' onclick='showDetail("+ i +")'>" + 
@@ -62,15 +65,38 @@
 	};
 	
 	function showDetail(i) {
+		var add_time = makeDate(dataJson[i]['add_time']);
 		document.getElementById('detail').innerHTML = 
-		"项目代号：" + dataJson[i]['project'] + "\n" +
-		"提交人：" + dataJson[i]['submitter'] + "\n" +
-		"提交时间：" + dataJson[i]['add_time'] + "\n\n" +
-		"本周要重点报告的工作：\n" + dataJson[i]['importance'] + "\n\n" +
-		"本周日常工作完成情况：\n" + dataJson[i]['completed'] + "\n\n" +
-		"存在的问题：\n" + dataJson[i]['issures'] + "\n\n" +
-		"下周重点这个计划：\n" + dataJson[i]['plan'];
+			"项目代号：" + dataJson[i]['project'] + "\n" +
+			"提交人：" + dataJson[i]['submitter'] + "\n" +
+			"提交时间：" + add_time + "\n\n" +
+			"本周要重点报告的工作：\n" + dataJson[i]['importance'] + "\n\n" +
+			"本周日常工作完成情况：\n" + dataJson[i]['completed'] + "\n\n" +
+			"存在的问题：\n" + dataJson[i]['issures'] + "\n\n" +
+			"下周重点这个计划：\n" + dataJson[i]['plan'];
 	}
+	
+	function makeDate(date) {
+	    try {
+	        var newDate = new Date(date);
+	        //在小于10的月份前补0
+	        var month = eval(newDate.getMonth() + 1) < 10 ? '0' + eval(newDate.getMonth() + 1) : eval(newDate.getMonth() + 1);
+	        //在小于10的日期前补0
+	        var day = newDate.getDate() < 10 ? '0' + newDate.getDate() : newDate.getDate();
+	        //在小于10的小时前补0
+	        var hours = newDate.getHours() < 10 ? '0' + newDate.getHours() : newDate.getHours();
+	        //在小于10的分钟前补0
+	        var minutes = newDate.getMinutes() < 10 ? '0' + newDate.getMinutes() : newDate.getMinutes();
+	        //在小于10的秒数前补0
+	        var seconds = newDate.getSeconds() < 10 ? '0' + newDate.getSeconds(): newDate.getSeconds();
+	        //拼接时间
+	        var stringDate = newDate.getFullYear() + '/' + month + '/' + day + " " + hours + ":" + minutes + ":" + seconds;
+	    } catch (e) {
+	        var stringDate = "0000/00/00 00:00:00";
+	    } finally {
+	        return stringDate;
+	    }
+	};
 
 </script>
 </html>
