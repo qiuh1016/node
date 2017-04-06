@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">周报查看</h1>
+	    <a class="mui-icon mui-icon-trash mui-pull-right" onclick="deleteReport()"></a>
+	</header>
+	
+	<div class="mui-content">
+		<div class="mui-button-row" style="margin: 10px 10px 10px 10px;">
+			<textarea id="detail" readonly="readonly" style="height: 500px; font-size: 13px; color: #555555;"></textarea>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" charset="utf-8">
+
+	var databaseID;
+	
+	window.onload = function() {
+		
+		databaseID = localStorage.id;
+		
+		document.getElementById('detail').innerHTML = 
+			"项目代号：" + localStorage.project + "\n" +
+			"提交人：" + localStorage.submitter + "\n" +
+			"提交时间：" + localStorage.add_time + "\n\n" +
+			"本周要重点报告的工作：\n" + localStorage.importance + "\n\n" +
+			"本周日常工作完成情况：\n" + localStorage.completed + "\n\n" +
+			"存在的问题：\n" + localStorage.issures + "\n\n" +
+			"下周重点这个计划：\n" + localStorage.plan;
+			
+		localStorage.removeItem('id');
+		localStorage.removeItem('project');
+		localStorage.removeItem('submitter');
+		localStorage.removeItem('add_time');
+		localStorage.removeItem('importance');
+		localStorage.removeItem('completed');
+		localStorage.removeItem('issures');
+		localStorage.removeItem('plan');
+		
+	}
+	
+	function deleteReport() {
+		mui.confirm('是否删除本条周报?','提示',['取消','删除'],function (e) {
+			if (e.index == 1) {
+				var _url = '/delete';
+				mui.getJSON(_url, {id: databaseID}, function(data) {
+					if (data['success']) {
+//						mui.toast('删除成功');
+						document.getElementById('detail').innerHTML = "";
+						localStorage.confirmDelete = 1;
+						mui.back();
+					} else{
+						mui.toast('删除失败');
+					}
+				});
+			}
+		},'div')
+
+	}
+	
+</script>
+</html>

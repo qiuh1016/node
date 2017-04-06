@@ -7,17 +7,15 @@
     <script src="js/mui.min.js"></script>
     <link href="css/mui.min.css" rel="stylesheet"/>
     <script type="text/javascript" charset="utf-8">
-      	mui.init({
-      		swipeBack: true;
-      	});
-      	
+      	mui.init();
     </script>
 </head>
 <body>
 	
-	<header class="mui-bar mui-bar-nav">
+	<header class="mui-bar mui-bar-nav ">
 		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 	    <h1 class="mui-title">周报查看</h1>
+	    <a class="mui-icon mui-icon-more mui-pull-right" href="#sheet1"></a>
 	</header>
 	
 	<div class="mui-content">
@@ -28,10 +26,28 @@
 				<li class="mui-table-view-cell">Item 3</li>-->
 			</ul>
 		</div>
-
-		<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
-			<textarea id="detail" readonly="readonly" style="height: 300px; font-size: 13px; color: #555555;"></textarea>
+		
+		<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action">
+		    <!-- 可选择菜单 -->
+		    <ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="">按项目代号查找</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="">按提交时间查找</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="">按提交人查找</a>
+				</li>
+		    </ul>
+		    <!-- 取消菜单 -->
+		    <ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#sheet1"><b>取消</b></a>
+				</li>
+		    </ul>
 		</div>
+		
 	</div>
 
 </body>
@@ -42,13 +58,15 @@
 	
 	window.onload = function() {
 		var list = document.getElementById('ul');
+		var showReportNumber = 50;
+		var totalReportNumber = 0;
 		list.innerHTML = "";
 		var _url = '/getReports';
-		mui.getJSON(_url, {num: 2}, function(data) {
+		mui.getJSON(_url, {limit: showReportNumber}, function(data) {
 				//获得服务器响应
 				dataJson = data;
+				totalReportNumber = data.length;
 				for (var i in data) {
-					
 					var project = data[i]['project'];
 					var submitter = data[i]['submitter'];
 					var add_time = makeDate(data[i]['add_time']);
@@ -59,44 +77,51 @@
 						project + "  -  " + submitter + "  -  " + add_time +
 						"</a></li>";
 				}
-			
+				
+				if (localStorage.confirmDelete == 1) {
+					localStorage.removeItem('confirmDelete');
+					localStorage.refreshList = 1;
+					window.history.go(0);
+				} else {
+					if (localStorage.refreshList == 1) {
+						localStorage.removeItem('refreshList');
+						mui.toast('删除成功');
+					} else {
+						if	(totalReportNumber >= showReportNumber) {
+							mui.toast('已显示最近提交的'+ showReportNumber+'条周报');
+						} else {
+							mui.toast('已显示全部'+ totalReportNumber+'条周报');
+						}
+					}
+					
+				}
+				
+				
 			}
 		);
-	};
-	
-	function showDetail(i) {
-		var add_time = makeDate(dataJson[i]['add_time']);
-		document.getElementById('detail').innerHTML = 
-			"项目代号：" + dataJson[i]['project'] + "\n" +
-			"提交人：" + dataJson[i]['submitter'] + "\n" +
-			"提交时间：" + add_time + "\n\n" +
-			"本周要重点报告的工作：\n" + dataJson[i]['importance'] + "\n\n" +
-			"本周日常工作完成情况：\n" + dataJson[i]['completed'] + "\n\n" +
-			"存在的问题：\n" + dataJson[i]['issures'] + "\n\n" +
-			"下周重点这个计划：\n" + dataJson[i]['plan'];
+		
+
 	}
-	
-	function makeDate(date) {
-	    try {
-	        var newDate = new Date(date);
-	        //在小于10的月份前补0
-	        var month = eval(newDate.getMonth() + 1) < 10 ? '0' + eval(newDate.getMonth() + 1) : eval(newDate.getMonth() + 1);
-	        //在小于10的日期前补0
-	        var day = newDate.getDate() < 10 ? '0' + newDate.getDate() : newDate.getDate();
-	        //在小于10的小时前补0
-	        var hours = newDate.getHours() < 10 ? '0' + newDate.getHours() : newDate.getHours();
-	        //在小于10的分钟前补0
-	        var minutes = newDate.getMinutes() < 10 ? '0' + newDate.getMinutes() : newDate.getMinutes();
-	        //在小于10的秒数前补0
-	        var seconds = newDate.getSeconds() < 10 ? '0' + newDate.getSeconds(): newDate.getSeconds();
-	        //拼接时间
-	        var stringDate = newDate.getFullYear() + '/' + month + '/' + day + " " + hours + ":" + minutes + ":" + seconds;
-	    } catch (e) {
-	        var stringDate = "0000/00/00 00:00:00";
-	    } finally {
-	        return stringDate;
-	    }
-	};
+
+	function showDetail(i) {
+		localStorage.id = dataJson[i]['id'];
+		localStorage.project = dataJson[i]['project'];
+		localStorage.submitter = dataJson[i]['submitter'];
+		localStorage.add_time = makeDate(dataJson[i]['add_time']);
+		localStorage.importance = dataJson[i]['importance'];
+		localStorage.completed = dataJson[i]['completed'];
+		localStorage.issures = dataJson[i]['issures'];
+		localStorage.plan = dataJson[i]['plan'];
+		
+		mui.openWindow({
+		    url:'report_detail.html',
+		    id:'report_detail',
+		    extras:{
+		      name: '123'//自定义扩展参数，可以用来处理页面间传值
+		    }
+		});
+	}
 
 </script>
+<script src="js/util.js"></script>
 </html>

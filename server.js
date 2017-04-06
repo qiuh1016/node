@@ -60,7 +60,7 @@ app.get('/submit', function (req, res) {
    console.log("submit GET 请求");
    res.sendFile(__dirname + '/http/index.html');
    // res.sendFile(__dirname + '/h5/default.htm');
- })
+})
 
 app.get('/report_submit', function (req, res) {
    console.log("report_submit GET 请求");
@@ -117,9 +117,9 @@ app.get('/add', function (req, res) {
     conn.query(insertSQL, function (err, res1) {
         if (err) {
           console.log(err);
-          res.send(err);
+          res.send('{"success" : false, "result": '+err+'}');
         } else {
-          res.send(res1);
+          res.send('{"success" : true, "result": '+res1+'}');
         }
     });
   }
@@ -129,30 +129,18 @@ app.get('/add', function (req, res) {
 app.get('/delete', function (req, res) {
   console.log("delete 请求");
   var id = req.query.id;
-  var name = req.query.name
-  if (id != null && name != null) {
-    res.send("请只输入一个参数");
-    return;
-  }
 
-  if (id != null) {
-    var SQL = 'delete from t_user where id= "' + id +'"';
+  if (id == null) {
+    res.send("参数错误");
+    return;
+  } else {
+    var SQL = 'delete from week_reports where id= "' + id +'"';
     conn.query(SQL, function (err, res1) {
         if (err) {
           console.log(err);
-          res.send(err);
+          res.send('{"success" : false}');
         } else {
-          res.send(res1);
-        }
-    });
-  } else if (name != null) {
-    var SQL = 'delete from t_user where name= "' + name +'"';
-    conn.query(SQL, function (err, res1) {
-        if (err) {
-          console.log(err);
-          res.send(err);
-        } else {
-          res.send(res1);
+          res.send('{"success" : true}');
         }
     });
   }
@@ -183,8 +171,8 @@ app.get('/test', function (req, res) {
 })
 
 app.get('/getReports', function (req, res) {
-  var id = req.query.id;
-  selectSQL = 'select * from week_reports'; //where `No.` = ' + id;
+  var limit = req.query.limit;
+  selectSQL = 'select * from week_reports order by id desc limit ' + limit; //where `No.` = ' + id;
    
   conn.query(selectSQL, function (err, rows) {
       if (err) console.log(err);
