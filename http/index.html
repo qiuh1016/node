@@ -23,36 +23,36 @@
 		<form action="/report_submit" method="GET">
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>*项目代号：</p>
-				<input type="text" name="project" class="mui-input-clear" style="font-size: 13px; color: #555555;" >
+				<input type="text" id="project" name="project" class="mui-input-clear" style="font-size: 13px; color: #555555;" >
 			</div>
 			
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>*提交人：</p>
-				<input type="text" name="submitter" class="mui-input-clear" style="font-size: 13px; color: #555555;">
+				<input type="text" id="submitter" name="submitter" class="mui-input-clear" style="font-size: 13px; color: #555555;">
 			</div>
 			
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>本周要重点报告的工作：</p>
-				<textarea type="text" name="importance" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+				<textarea type="text" id="importance" name="importance" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
 			</div>
 			
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>本周日常工作完成情况：</p>
-				<textarea type="text" name="completed" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+				<textarea type="text" id="completed" name="completed" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
 			</div>
 			
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>存在的问题：</p>
-				<textarea type="text" name="issures" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+				<textarea type="text" id="issures" name="issures" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
 			</div>
 			
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>下周重点工作计划：</p>
-				<textarea type="text" name="plan" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+				<textarea type="text" id="plan" name="plan" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
 			</div>
 	
 			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
-				<button type="submit" class="mui-btn mui-btn-primary mui-btn-block">提交</button>
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="submitReport()">提交</button>
 			</div>
 			<br>
 			
@@ -60,4 +60,36 @@
 	</div>
 
 </body>
+<script type="text/javascript" charset="utf-8">
+
+	function submitReport() {
+		var project = document.getElementById('project').value;
+		var submitter = document.getElementById('submitter').value;
+		var importance = document.getElementById('importance').value;
+		var completed = document.getElementById('completed').value;
+		var issures = document.getElementById('issures').value;
+		var plan = document.getElementById('plan').value;
+		
+		if (project == "" || submitter == "") {
+			mui.toast('项目代号及提交人不能为空');
+			return;
+		}
+		
+		var _url = '/report_submit';
+		mui.getJSON(_url, {project:project, submitter: submitter, importance: importance, completed: completed, issures: issures, plan: plan}, function(data) {
+				//获得服务器响应
+				dataJson = data;
+				if (data['success']) {
+					mui.alert('提交成功','提示','OK',function (e) {
+					   mui.openWindow({
+					   		url:'report_list.html'
+					   });
+					},'div')
+				} else{
+					mui.toast('提交失败');
+				}
+			}
+		);
+	}
+</script>
 </html>

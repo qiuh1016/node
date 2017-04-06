@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">周报修改</h1>
+	</header>
+
+	<div class="mui-content">
+		<br>
+		<form action="/report_submit" method="GET">
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*项目代号：</p>
+				<input type="text" id="project" name="project" class="mui-input-clear" style="font-size: 13px; color: #555555;" ></input>
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*提交人：</p>
+				<input type="text" id="submitter" name="submitter" class="mui-input-clear" style="font-size: 13px; color: #555555;"></input>
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>本周要重点报告的工作：</p>
+				<textarea type="text" id="importance" name="importance" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>本周日常工作完成情况：</p>
+				<textarea type="text" id="completed" name="completed" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>存在的问题：</p>
+				<textarea type="text" id="issures" name="issures" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>下周重点工作计划：</p>
+				<textarea type="text" id="plan" name="plan" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+			</div>
+	
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="update()">提交修改</button>
+			</div>
+			<br>
+			
+		</form>
+	</div>
+
+</body>
+<script type="text/javascript" charset="utf-8">
+
+	var id = localStorage.id;	
+	
+	window.onload = function() {	
+		document.getElementById('project').value = localStorage.project;
+		document.getElementById('submitter').value = localStorage.submitter;
+		document.getElementById('importance').innerHTML = localStorage.importance;
+		document.getElementById('completed').innerHTML = localStorage.completed;
+		document.getElementById('issures').innerHTML = localStorage.issures;
+		document.getElementById('plan').innerHTML = localStorage.plan;
+	}
+	
+	function update() {
+		var project = document.getElementById('project').value;
+		var submitter = document.getElementById('submitter').value;
+		var importance = document.getElementById('importance').value;
+		var completed = document.getElementById('completed').value;
+		var issures = document.getElementById('issures').value;
+		var plan = document.getElementById('plan').value;
+		
+		var _url = '/report_update';
+		mui.getJSON(_url, {databaseID: id, project:project, submitter: submitter, importance: importance, completed: completed, issures: issures, plan: plan}, function(data) {
+				//获得服务器响应
+				dataJson = data;
+				if (data['success']) {
+					mui.alert('修改成功','提示','OK',function (e) {
+					   mui.openWindow({
+					   		url:'report_list.html'
+					   });
+					},'div')
+				} else{
+					mui.toast('删除失败');
+				}
+			}
+		);
+	}
+	
+	
+</script>
+</html>

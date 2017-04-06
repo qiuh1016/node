@@ -84,16 +84,44 @@ app.get('/report_submit', function (req, res) {
       conn.query(insertSQL, function (err, res1) {
         if (err) {
           console.log(err);
-          // res.send(err);
-          res.sendFile(__dirname + '/http/submit_failed.html');
+          res.send('{"success" : false}');
         } else {
-          // res.send(res1);
-          // res.send("提交成功！")
-          res.sendFile(__dirname + '/http/submit_succeed.html');
+          res.send('{"success" : true}');
         }
     });
-   }
- })
+  }
+})
+
+app.get('/report_update', function (req, res) {
+   console.log("report_update GET 请求");
+   var id = req.query.databaseID;
+   var project = req.query.project;
+   var submitter = req.query.submitter;
+   var importance = req.query.importance;
+   var completed = req.query.completed;
+   var issures = req.query.issures;
+   var plan = req.query.plan;
+
+   if (project == "" || submitter == "") {
+      res.send('项目代号和提交者不能为空！'); 
+   } else {
+      insertSQL = 'UPDATE week_reports SET ';
+      insertSQL = insertSQL + 'project = "'+project+'",';
+      insertSQL = insertSQL + 'submitter = "'+submitter+'",';
+      insertSQL = insertSQL + 'importance = "'+importance+'",';
+      insertSQL = insertSQL + 'completed = "'+completed+'",';
+      insertSQL = insertSQL + 'issures = "'+issures+'",';
+      insertSQL = insertSQL + 'plan = "'+plan+'" where id = ' + id +';';
+      conn.query(insertSQL, function (err, res1) {
+        if (err) {
+          console.log(err);
+          res.send('{"success" : false}');
+        } else {
+          res.send('{"success" : true}');
+        }
+    });
+  }
+})
 
 app.get('/version', function (req, res) {
    console.log("版本 请求");
@@ -177,7 +205,7 @@ app.get('/getReports', function (req, res) {
   conn.query(selectSQL, function (err, rows) {
       if (err) console.log(err);
       console.log("SELECT ==> ");
-      console.log(rows);
+      // console.log(rows);
       res.send(rows);
   });
 

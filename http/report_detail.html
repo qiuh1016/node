@@ -15,22 +15,53 @@
 	<header class="mui-bar mui-bar-nav">
 		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 	    <h1 class="mui-title">周报查看</h1>
-	    <a class="mui-icon mui-icon-trash mui-pull-right" onclick="deleteReport()"></a>
+	    <a class="mui-icon mui-icon-more mui-pull-right" href="#sheet1"></a>
 	</header>
 	
 	<div class="mui-content">
 		<div class="mui-button-row" style="margin: 10px 10px 10px 10px;">
 			<textarea id="detail" readonly="readonly" style="height: 500px; font-size: 13px; color: #555555;"></textarea>
 		</div>
+		
+		<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action">
+		    <!-- 可选择菜单 -->
+		    <ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a onclick="editReport()">修改</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a onclick="deleteReport()">删除</a>
+				</li>
+		    </ul>
+		    <!-- 取消菜单 -->
+		    <ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#sheet1"><b>取消</b></a>
+				</li>
+		    </ul>
+		</div>
+		
 	</div>
 </body>
 <script type="text/javascript" charset="utf-8">
 
 	var databaseID;
+	var project;
+	var submitter;
+	var importance;
+	var completed;
+	var issures;
+	var plan;
 	
 	window.onload = function() {
 		
 		databaseID = localStorage.id;
+		project = localStorage.project;
+		submitter = localStorage.submitter;
+		importance = localStorage.importance;
+		completed = localStorage.completed;
+		issures = localStorage.issures;
+		plan = localStorage.plan;
 		
 		document.getElementById('detail').innerHTML = 
 			"项目代号：" + localStorage.project + "\n" +
@@ -41,6 +72,13 @@
 			"存在的问题：\n" + localStorage.issures + "\n\n" +
 			"下周重点这个计划：\n" + localStorage.plan;
 			
+		if (localStorage.refreshList == 1) {
+			localStorage.removeItem('refreshList');
+			mui.toast('修改成功');
+		}
+	}
+	
+	window.onabort = function() {
 		localStorage.removeItem('id');
 		localStorage.removeItem('project');
 		localStorage.removeItem('submitter');
@@ -49,16 +87,15 @@
 		localStorage.removeItem('completed');
 		localStorage.removeItem('issures');
 		localStorage.removeItem('plan');
-		
 	}
 	
 	function deleteReport() {
+		mui('.mui-popover').popover('hide', document.getElementById('sheet1'));
 		mui.confirm('是否删除本条周报?','提示',['取消','删除'],function (e) {
 			if (e.index == 1) {
 				var _url = '/delete';
 				mui.getJSON(_url, {id: databaseID}, function(data) {
 					if (data['success']) {
-//						mui.toast('删除成功');
 						document.getElementById('detail').innerHTML = "";
 						localStorage.confirmDelete = 1;
 						mui.back();
@@ -68,7 +105,14 @@
 				});
 			}
 		},'div')
-
+	}
+	
+	function editReport() {
+//		mui('.mui-popover').popover('hide', document.getElementById('sheet1'));
+		mui.openWindow({
+			url:'report_update.html',
+			id:'report_update'
+		});
 	}
 	
 </script>
