@@ -53,7 +53,6 @@ function add() {
 
 app.get('/', function (req, res) {
    console.log("主页 GET 请求");
-   // res.send("巧宝宝要乖乖的哟");
  })
 
 app.get('/submit', function (req, res) {
@@ -224,8 +223,8 @@ app.get('/getLastReports', function (req, res) {
 
 })
 
-var server = app.listen(8081, function () {
-  var host = server.address().address
-  var port = server.address().port
-  console.log("应用实例，访问地址为 http://%s:%s", host, port)
+var server = app.listen(8084, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+  console.log("应用实例，访问地址为 http://" + host + ":" + port);
 })
