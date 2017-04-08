@@ -176,15 +176,28 @@ app.get('/delete', function (req, res) {
 
  
 app.get('/login', function (req, res) {
-   console.log("登录 请求");
-   var username = req.query.username;
-   var password = req.query.password;
+  console.log("登录 请求");
+  var username = req.query.username;
+  var password = req.query.password;
 
-   if (username == "admin" && password == "123") {
-   	res.send('登录成功');
-   } else {
-   	res.send('用户名密码错误');
-   } 
+  var selectSQL = 'select * from user where username = "' + username + '"';
+  conn.query(selectSQL, function (err, rows) {
+      if (err) {
+        console.log(err);
+        res.send('{"success" : false, "result": "datebase error"}');
+      } else {
+        if (rows.length == 0) {
+          res.send('{"success" : false, "result": "用户名不存在"}');
+          return;
+        };
+
+        if (password == rows[0]['password']) {
+          res.send('{"success" : true, "result": "登陆成功"}');
+        } else {
+          res.send('{"success" : false, "result": "用户名密码错误"}');
+        }
+      }
+  });
 
 })
 
