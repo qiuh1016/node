@@ -58,7 +58,6 @@ app.get('/', function (req, res) {
 app.get('/submit', function (req, res) {
    console.log("submit GET 请求");
    res.sendFile(__dirname + '/http/index.html');
-   // res.sendFile(__dirname + '/h5/default.htm');
 })
 
 app.get('/report_submit', function (req, res) {
@@ -144,9 +143,9 @@ app.get('/add', function (req, res) {
     conn.query(insertSQL, function (err, res1) {
         if (err) {
           console.log(err);
-          res.send('{"success" : false, "result": '+err+'}');
+          res.send('{"success" : false, "result": ' + err + '}');
         } else {
-          res.send('{"success" : true, "result": '+res1+'}');
+          res.send('{"success" : true, "result": ' + res1 + '}');
         }
     });
   }
@@ -178,7 +177,7 @@ app.get('/delete', function (req, res) {
 app.get('/login', function (req, res) {
   console.log("登录 请求");
   var username = req.query.username;
-  var password = req.query.password;
+  var password = req.query.pwd;
 
   var selectSQL = 'select * from user where username = "' + username + '"';
   conn.query(selectSQL, function (err, rows) {
@@ -188,6 +187,9 @@ app.get('/login', function (req, res) {
       } else {
         if (rows.length == 0) {
           res.send('{"success" : false, "result": "用户名不存在"}');
+          return;
+        } else if (rows.length > 1){
+          res.send('{"success" : false, "result": "用户名存在重复，请联系管理员"}');
           return;
         };
 
@@ -201,6 +203,11 @@ app.get('/login', function (req, res) {
 
 })
 
+app.get('/login_page', function (req, res) {
+  console.log("登录 页面");
+  res.sendFile(__dirname + '/http/login.html');
+})
+
 app.get('/test', function (req, res) {
    
    // res.send('<h2>用户名密码错误</h2>');
@@ -210,9 +217,29 @@ app.get('/test', function (req, res) {
 
 })
 
+
+//暂时不用了 用下面的byName username = all 则不进行筛选
 app.get('/getReports', function (req, res) {
   var limit = req.query.limit;
   selectSQL = 'select * from week_reports order by id desc limit ' + limit; //where `No.` = ' + id;
+   
+  conn.query(selectSQL, function (err, rows) {
+      if (err) console.log(err);
+      console.log("SELECT ==> ");
+      // console.log(rows);
+      res.send(rows);
+  });
+
+})
+
+app.get('/getReportsByName', function (req, res) {
+  var limit = req.query.limit;
+  var username = req.query.username;
+  if (username == 'all') {
+      selectSQL = 'select * from week_reports order by id desc limit ' + limit;
+  } else {
+      selectSQL = 'select * from week_reports WHERE submitter = "'+ username +'" ORDER BY id DESC LIMIT ' + limit;
+  }
    
   conn.query(selectSQL, function (err, rows) {
       if (err) console.log(err);

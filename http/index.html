@@ -13,6 +13,7 @@
 <body>
 	
 	<header class="mui-bar mui-bar-nav">
+		<a class="mui-icon mui-icon-person mui-pull-left" href="#sheet1"></a>
 	    <h1 class="mui-title">周报提交</h1>
 	    <a class="mui-icon mui-icon-bars mui-pull-right" href="report_list.html"></a>
 	</header>
@@ -20,7 +21,7 @@
 	
 	<div class="mui-content">
 		<br>
-		<form action="/report_submit" method="GET">
+		<form>
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>*项目代号：</p>
 				<input type="text" id="project" name="project" class="mui-input-clear" style="font-size: 13px; color: #555555;" >
@@ -57,10 +58,33 @@
 			<br>
 			
 		</form>
+		
+		<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action">
+		    <!-- 可选择菜单 -->
+		    <ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="">修改密码</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a onclick="logout()">退出登陆</a>
+				</li>
+		    </ul>
+		    <!-- 取消菜单 -->
+		    <ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#sheet1"><b>取消</b></a>
+				</li>
+		    </ul>
+		</div>
+	
 	</div>
 
 </body>
 <script type="text/javascript" charset="utf-8">
+
+	window.onload = function() {
+		document.getElementById('submitter').value = localStorage.username;
+	}
 
 	function submitReport() {
 		var project = document.getElementById('project').value;
@@ -91,5 +115,18 @@
 			}
 		);
 	}
+	
+	function logout() {
+		mui('.mui-popover').popover('hide', document.getElementById('sheet1'));
+		mui.confirm('是否要退出登陆?','提示',['取消','退出'], function (e) {
+			if (e.index == 1) {
+				localStorage.removeItem('username');
+				mui.openWindow({
+					url:'login.html'
+				});
+			}
+		},'div')
+	}
+
 </script>
 </html>
