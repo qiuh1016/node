@@ -53,11 +53,17 @@ function add() {
 
 app.get('/', function (req, res) {
    console.log("主页 GET 请求");
+   res.sendFile(__dirname + '/http/login.html');
  })
 
-app.get('/submit', function (req, res) {
+// app.get('/submit', function (req, res) {
+//    console.log("submit GET 请求");
+//    res.sendFile(__dirname + '/http/index.html');
+// })
+
+app.get('/index', function (req, res) {
    console.log("submit GET 请求");
-   res.sendFile(__dirname + '/http/index.html');
+   res.sendFile(__dirname + '/http/login.html');
 })
 
 app.get('/report_submit', function (req, res) {
@@ -235,7 +241,7 @@ app.get('/getReports', function (req, res) {
 app.get('/getReportsByName', function (req, res) {
   var limit = req.query.limit;
   var username = req.query.username;
-  if (username == 'all') {
+  if (username == '李培正' || username == '裘鸿' || username == 'all') {
       selectSQL = 'select * from week_reports order by id desc limit ' + limit;
   } else {
       selectSQL = 'select * from week_reports WHERE submitter = "'+ username +'" ORDER BY id DESC LIMIT ' + limit;

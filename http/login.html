@@ -22,12 +22,12 @@
 		<form action="/report_submit" method="GET">
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>用户名：</p>
-				<input type="text" id="username" class="mui-input-clear" style="font-size: 13px; color: #555555;" >
+				<input type="text" id="username" class="mui-input-clear" placeholder="请输入用户名" style="font-size: 13px; color: #555555;" >
 			</div>
 			
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>密码：</p>
-				<input type="text" id="pwd" name="submitter" class="mui-input-clear" style="font-size: 13px; color: #555555;">
+				<input type="password" id="pwd" class="mui-input-password" placeholder="请输入密码" style="font-size: 13px; color: #555555;">
 			</div>
 	
 			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
@@ -40,6 +40,16 @@
 
 </body>
 <script type="text/javascript" charset="utf-8">
+
+	window.onload = function() {
+		if (localStorage.username != null) {
+			mui.openWindow({
+				url: 'report_submit.html'
+			});
+		} else if (localStorage.lastUsername != null) {
+			document.getElementById('username').value = localStorage.lastUsername;
+		}
+	}
 
 	function userLogin() {
 		var username = document.getElementById('username').value;
@@ -57,9 +67,10 @@
 				if (data['success']) {
 					mui.toast('登陆成功');
 					localStorage.username = username;
+					localStorage.lastUsername = username;
 					setTimeout(function() {
 						mui.openWindow({
-							url: 'index.html'
+							url: 'report_submit.html'
 						})
 					},800);
 				} else{

@@ -18,7 +18,6 @@
 	    <a class="mui-icon mui-icon-bars mui-pull-right" href="report_list.html"></a>
 	</header>
 
-	
 	<div class="mui-content">
 		<br>
 		<form>
@@ -29,7 +28,7 @@
 			
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>*提交人：</p>
-				<input type="text" id="submitter" name="submitter" class="mui-input-clear" style="font-size: 13px; color: #555555;">
+				<input type="text" id="submitter" name="submitter" readonly="readonly" style="font-size: 13px; color: #AAAAAA;">
 			</div>
 			
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
@@ -51,7 +50,7 @@
 				<p>下周重点工作计划：</p>
 				<textarea type="text" id="plan" name="plan" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
 			</div>
-	
+			
 			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
 				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="submitReport()">提交</button>
 			</div>
@@ -63,7 +62,7 @@
 		    <!-- 可选择菜单 -->
 		    <ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					<a href="">修改密码</a>
+					<a href="change_password.html">修改密码</a>
 				</li>
 				<li class="mui-table-view-cell">
 					<a onclick="logout()">退出登陆</a>
@@ -83,7 +82,13 @@
 <script type="text/javascript" charset="utf-8">
 
 	window.onload = function() {
-		document.getElementById('submitter').value = localStorage.username;
+		if (localStorage.username == null) {
+			mui.openWindow({
+				url: 'login.html'
+			});
+		} else{
+			document.getElementById('submitter').value = localStorage.username;
+		}
 	}
 
 	function submitReport() {
@@ -94,8 +99,13 @@
 		var issures = document.getElementById('issures').value;
 		var plan = document.getElementById('plan').value;
 		
-		if (project == "" || submitter == "") {
-			mui.toast('项目代号及提交人不能为空');
+		if (project == "") {
+			mui.toast('项目代号不能为空');
+			return;
+		}
+		
+		if (submitter == "") {
+			mui.toast('提交人不能为空');
 			return;
 		}
 		
