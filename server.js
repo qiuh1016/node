@@ -3,14 +3,6 @@ var app = express();
 app.use(express.static('http'));
 app.use(express.static('h5'));
 
-var serverVersion = 1.2;
-var forceToUpdate = false;
-var dbTestID = "";
-var versionJSON = {
-            version       : serverVersion, 
-            forceToUpdate : forceToUpdate
-          };
-
 //db
 var mysql = require('mysql');
 var conn = mysql.createConnection({
@@ -24,47 +16,12 @@ conn.connect();
 
 var selectSQL = 'select * from t_user limit 10';//where id = 3';
 var insertSQL = 'insert into t_user(name) values("conan"),("fens.me")';
-//query
-function select() {
-	conn.query(selectSQL, function (err, rows) {
-	    if (err) console.log(err);
-
-	    console.log("SELECT ==> ");
-	    for (var i in rows) {
-	        dbTestID = rows[i]['name'];
-	        console.log(rows[i]['name']);
-	        versionJSON = {
-	          version       : serverVersion, 
-	          forceToUpdate : forceToUpdate, 
-	          dbTestID      : dbTestID
-	        };
-	    }
-	});
-} 
-
-function add() {
-	conn.query(insertSQL, function (err, res) {
-        if (err) console.log(err);
-        console.log("INSERT Return ==> ");
-        console.log(res);
-    });
-}
 
 
 app.get('/', function (req, res) {
    console.log("主页 GET 请求");
    res.sendFile(__dirname + '/http/login.html');
  })
-
-// app.get('/submit', function (req, res) {
-//    console.log("submit GET 请求");
-//    res.sendFile(__dirname + '/http/index.html');
-// })
-
-app.get('/index', function (req, res) {
-   console.log("submit GET 请求");
-   res.sendFile(__dirname + '/http/login.html');
-})
 
 app.get('/report_submit', function (req, res) {
    console.log("report_submit GET 请求");
@@ -127,38 +84,32 @@ app.get('/report_update', function (req, res) {
   }
 })
 
-app.get('/version', function (req, res) {
-   console.log("版本 请求");
-   res.send(JSON.stringify(versionJSON))
-   // res.send('{"version" : 1.1, "forceToUpdate": false}');
-})
-
-app.get('/download',function(req,res,next){
-  var filePath = __dirname + '/app-release.apk';
-  console.log("下载 请求");
-  res.download(filePath,'autoupdate.apk');
-});
+// app.get('/download',function(req,res,next){
+//   var filePath = __dirname + '/app-release.apk';
+//   console.log("下载 请求");
+//   res.download(filePath,'autoupdate.apk');
+// });
 
 
-app.get('/add', function (req, res) {
-   console.log("add 请求");
-   var name = req.query.name;
+// app.get('/add', function (req, res) {
+//    console.log("add 请求");
+//    var name = req.query.name;
 
-   if (name != null) {
-    insertSQL = 'insert into t_user(name) values("' + name +'")';
-    conn.query(insertSQL, function (err, res1) {
-        if (err) {
-          console.log(err);
-          res.send('{"success" : false, "result": ' + err + '}');
-        } else {
-          res.send('{"success" : true, "result": ' + res1 + '}');
-        }
-    });
-  }
+//    if (name != null) {
+//     insertSQL = 'insert into t_user(name) values("' + name +'")';
+//     conn.query(insertSQL, function (err, res1) {
+//         if (err) {
+//           console.log(err);
+//           res.send('{"success" : false, "result": ' + err + '}');
+//         } else {
+//           res.send('{"success" : true, "result": ' + res1 + '}');
+//         }
+//     });
+//   }
 
-})
+// })
 
-app.get('/delete', function (req, res) {
+app.get('/report_delete', function (req, res) {
   console.log("delete 请求");
   var id = req.query.id;
 
@@ -243,35 +194,6 @@ app.get('/change_pwd', function (req, res) {
     });
 })
 
-app.get('/login_page', function (req, res) {
-  console.log("登录 页面");
-  res.sendFile(__dirname + '/http/login.html');
-})
-
-app.get('/test', function (req, res) {
-   
-   // res.send('<h2>用户名密码错误</h2>');
-   res.sendFile('/Users/qiuhong/Desktop/node/qq.png');
-   console.log('\ntest 请求:');
-   console.log(req.headers);
-
-})
-
-
-//暂时不用了 用下面的byName username = all 则不进行筛选
-app.get('/getReports', function (req, res) {
-  var limit = req.query.limit;
-  selectSQL = 'select * from week_reports order by id desc limit ' + limit; //where `No.` = ' + id;
-   
-  conn.query(selectSQL, function (err, rows) {
-      if (err) console.log(err);
-      console.log("SELECT ==> ");
-      // console.log(rows);
-      res.send(rows);
-  });
-
-})
-
 app.get('/getReportsByName', function (req, res) {
   var limit = req.query.limit;
   var username = req.query.username;
@@ -290,18 +212,18 @@ app.get('/getReportsByName', function (req, res) {
 
 })
 
-app.get('/getLastReports', function (req, res) {
-  var num = req.query.num;
-  selectSQL = 'select * from week_reports ORDER BY "add_time" DESC LIMIT ' + num; //where `No.` = ' + id;
+// app.get('/getLastReports', function (req, res) {
+//   var num = req.query.num;
+//   selectSQL = 'select * from week_reports ORDER BY "add_time" DESC LIMIT ' + num; //where `No.` = ' + id;
    
-  conn.query(selectSQL, function (err, rows) {
-      if (err) console.log(err);
-      console.log("getLast ==> ");
-      console.log(rows);
-      res.send(rows);
-  });
+//   conn.query(selectSQL, function (err, rows) {
+//       if (err) console.log(err);
+//       console.log("getLast ==> ");
+//       console.log(rows);
+//       res.send(rows);
+//   });
 
-})
+// })
 
 var server = app.listen(8084, function () {
   var host = server.address().address;

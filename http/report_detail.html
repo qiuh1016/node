@@ -93,7 +93,7 @@
 		mui('.mui-popover').popover('hide', document.getElementById('sheet1'));
 		mui.confirm('是否删除本条周报?','提示',['取消','删除'],function (e) {
 			if (e.index == 1) {
-				var _url = '/delete';
+				var _url = '/report_delete';
 				mui.getJSON(_url, {id: databaseID}, function(data) {
 					if (data['success']) {
 						document.getElementById('detail').innerHTML = "";
