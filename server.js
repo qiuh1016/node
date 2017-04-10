@@ -209,6 +209,40 @@ app.get('/login', function (req, res) {
 
 })
 
+app.get('/change_pwd', function (req, res) {
+    console.log("change_pwd GET 请求");
+
+    var username = req.query.username;
+    var oldPwd = req.query.oldPwd;
+    var newPwd = req.query.newPwd;
+
+    selectSQL = 'select * from user where username = "' + username + '"';
+    var updateSQL = 'UPDATE user SET password = "' + newPwd +'" where username = "' + username + '"';
+    //查询用户名 和 密码
+    conn.query(selectSQL, function (err, rows) {
+        if (err) {
+          console.log(err);
+          console.log(rows);
+          res.send('{"success" : false, "result": "datebase error"}');
+        } else {
+        	if (oldPwd == rows[0]['password']) {
+        		//原密码正确 修改密码
+        		conn.query(updateSQL, function (err, rows1) {
+			        if (err) {
+			          	console.log(err);
+			          	res.send('{"success" : false, "result": "datebase error"}');
+			        } else {
+			         	res.send('{"success" : true, "result": "修改成功"}');
+			        }
+			    });	
+        	} else {
+        		res.send('{"success" : false, "result": "原密码错误"}');
+        	};
+
+        }
+    });
+})
+
 app.get('/login_page', function (req, res) {
   console.log("登录 页面");
   res.sendFile(__dirname + '/http/login.html');
