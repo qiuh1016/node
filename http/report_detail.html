@@ -70,7 +70,7 @@
 			"本周要重点报告的工作：\n" + localStorage.importance + "\n\n" +
 			"本周日常工作完成情况：\n" + localStorage.completed + "\n\n" +
 			"存在的问题：\n" + localStorage.issures + "\n\n" +
-			"下周重点这个计划：\n" + localStorage.plan;
+			"下周重点工作计划：\n" + localStorage.plan;
 			
 		if (localStorage.refreshList == 1) {
 			localStorage.removeItem('refreshList');
@@ -96,9 +96,12 @@
 				var _url = '/report_delete';
 				mui.getJSON(_url, {id: databaseID}, function(data) {
 					if (data['success']) {
-						document.getElementById('detail').innerHTML = "";
-						localStorage.confirmDelete = 1;
-						mui.back();
+						mui.toast('删除成功');
+						setTimeout(function() {
+							mui.openWindow({
+								url:'report_list.html'
+							})
+						}, 800);
 					} else{
 						mui.toast('删除失败');
 					}

@@ -81,22 +81,10 @@
 						"</a></li>";
 				}
 				
-				if (localStorage.confirmDelete == 1) {
-					localStorage.removeItem('confirmDelete');
-					localStorage.refreshList = 1;
-					window.history.go(0);
+				if	(totalReportNumber >= showReportNumber) {
+					mui.toast('已显示最近提交的'+ showReportNumber+'条周报');
 				} else {
-					if (localStorage.refreshList == 1) {
-						localStorage.removeItem('refreshList');
-						mui.toast('删除成功');
-					} else {
-						if	(totalReportNumber >= showReportNumber) {
-							mui.toast('已显示最近提交的'+ showReportNumber+'条周报');
-						} else {
-							mui.toast('已显示全部'+ totalReportNumber+'条周报');
-						}
-					}
-					
+					mui.toast('已显示全部'+ totalReportNumber+'条周报');
 				}
 			}
 		);

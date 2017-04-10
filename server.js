@@ -14,74 +14,79 @@ var conn = mysql.createConnection({
 });
 conn.connect();
 
-var selectSQL = 'select * from t_user limit 10';//where id = 3';
+var selectSQL = 'select * from t_user limit 10';
 var insertSQL = 'insert into t_user(name) values("conan"),("fens.me")';
 
+var server = app.listen(8084, function () {
+	var host = server.address().address;
+	var port = server.address().port;
+	console.log("应用实例，访问地址为 http://" + host + ":" + port);
+})
 
 app.get('/', function (req, res) {
-   console.log("主页 GET 请求");
-   res.sendFile(__dirname + '/http/login.html');
- })
+	console.log("主页 GET 请求");
+	res.sendFile(__dirname + '/http/login.html');
+})
 
 app.get('/report_submit', function (req, res) {
-   console.log("report_submit GET 请求");
-   var project = req.query.project;
-   var submitter = req.query.submitter;
-   var importance = req.query.importance;
-   var completed = req.query.completed;
-   var issures = req.query.issures;
-   var plan = req.query.plan;
+	console.log("report_submit GET 请求");
+	var project = req.query.project;
+	var submitter = req.query.submitter;
+	var importance = req.query.importance;
+	var completed = req.query.completed;
+	var issures = req.query.issures;
+	var plan = req.query.plan;
 
-   if (project == "" || submitter == "") {
-      res.send('项目代号和提交者不能为空！'); 
-   } else {
-      insertSQL = 'INSERT INTO week_reports SET ';
-      insertSQL = insertSQL + 'project = "'+project+'",';
-      insertSQL = insertSQL + 'submitter = "'+submitter+'",';
-      insertSQL = insertSQL + 'importance = "'+importance+'",';
-      insertSQL = insertSQL + 'completed = "'+completed+'",';
-      insertSQL = insertSQL + 'issures = "'+issures+'",';
-      insertSQL = insertSQL + 'plan = "'+plan+'";';
-      conn.query(insertSQL, function (err, res1) {
-        if (err) {
-          console.log(err);
-          res.send('{"success" : false}');
-        } else {
-          res.send('{"success" : true}');
-        }
-    });
-  }
+	if (project == "" || submitter == "") {
+		res.send('项目代号和提交者不能为空！'); 
+	} else {
+		insertSQL = 'INSERT INTO week_reports SET ';
+		insertSQL = insertSQL + 'project = "'+project+'",';
+		insertSQL = insertSQL + 'submitter = "'+submitter+'",';
+		insertSQL = insertSQL + 'importance = "'+importance+'",';
+		insertSQL = insertSQL + 'completed = "'+completed+'",';
+		insertSQL = insertSQL + 'issures = "'+issures+'",';
+		insertSQL = insertSQL + 'plan = "'+plan+'";';
+		conn.query(insertSQL, function (err, res1) {
+			if (err) {
+				console.log(err);
+				res.send('{"success" : false}');
+			} else {
+				res.send('{"success" : true}');
+        	}
+    	});
+  	}
 })
 
 app.get('/report_update', function (req, res) {
-   console.log("report_update GET 请求");
-   var id = req.query.databaseID;
-   var project = req.query.project;
-   var submitter = req.query.submitter;
-   var importance = req.query.importance;
-   var completed = req.query.completed;
-   var issures = req.query.issures;
-   var plan = req.query.plan;
-
-   if (project == "" || submitter == "") {
-      res.send('项目代号和提交者不能为空！'); 
-   } else {
-      insertSQL = 'UPDATE week_reports SET ';
-      insertSQL = insertSQL + 'project = "'+project+'",';
-      insertSQL = insertSQL + 'submitter = "'+submitter+'",';
-      insertSQL = insertSQL + 'importance = "'+importance+'",';
-      insertSQL = insertSQL + 'completed = "'+completed+'",';
-      insertSQL = insertSQL + 'issures = "'+issures+'",';
-      insertSQL = insertSQL + 'plan = "'+plan+'" where id = ' + id +';';
-      conn.query(insertSQL, function (err, res1) {
-        if (err) {
-          console.log(err);
-          res.send('{"success" : false}');
-        } else {
-          res.send('{"success" : true}');
-        }
-    });
-  }
+	console.log("report_update GET 请求");
+	var id = req.query.databaseID;
+	var project = req.query.project;
+	var submitter = req.query.submitter;
+	var importance = req.query.importance;
+	var completed = req.query.completed;
+	var issures = req.query.issures;
+	var plan = req.query.plan;
+	
+	if (project == "" || submitter == "") {
+		res.send('项目代号和提交者不能为空！'); 
+	} else {
+		insertSQL = 'UPDATE week_reports SET ';
+		insertSQL = insertSQL + 'project = "'+project+'",';
+		insertSQL = insertSQL + 'submitter = "'+submitter+'",';
+		insertSQL = insertSQL + 'importance = "'+importance+'",';
+		insertSQL = insertSQL + 'completed = "'+completed+'",';
+		insertSQL = insertSQL + 'issures = "'+issures+'",';
+		insertSQL = insertSQL + 'plan = "'+plan+'" where id = ' + id +';';
+		conn.query(insertSQL, function (err, res1) {
+			if (err) {
+				console.log(err);
+				res.send('{"success" : false}');
+			} else {
+				res.send('{"success" : true}');
+        	}
+		});
+	}
 })
 
 // app.get('/download',function(req,res,next){
@@ -110,54 +115,52 @@ app.get('/report_update', function (req, res) {
 // })
 
 app.get('/report_delete', function (req, res) {
-  console.log("delete 请求");
-  var id = req.query.id;
+	console.log("delete 请求");
+	var id = req.query.id;
 
-  if (id == null) {
-    res.send("参数错误");
-    return;
-  } else {
-    var SQL = 'delete from week_reports where id= "' + id +'"';
-    conn.query(SQL, function (err, res1) {
-        if (err) {
-          console.log(err);
-          res.send('{"success" : false}');
-        } else {
-          res.send('{"success" : true}');
-        }
-    });
-  }
-
+	if (id == null) {
+		res.send("参数错误");
+		return;
+	} else {
+		var SQL = 'delete from week_reports where id= "' + id +'"';
+		conn.query(SQL, function (err, res1) {
+			if (err) {
+				console.log(err);
+				res.send('{"success" : false}');
+			} else {
+				res.send('{"success" : true}');
+			}
+		});
+	}
 })
 
  
 app.get('/login', function (req, res) {
-  console.log("登录 请求");
-  var username = req.query.username;
-  var password = req.query.pwd;
+	console.log("登录 请求");
+	var username = req.query.username;
+	var password = req.query.pwd;
 
-  var selectSQL = 'select * from user where username = "' + username + '"';
-  conn.query(selectSQL, function (err, rows) {
-      if (err) {
-        console.log(err);
-        res.send('{"success" : false, "result": "datebase error"}');
-      } else {
-        if (rows.length == 0) {
-          res.send('{"success" : false, "result": "用户名不存在"}');
-          return;
-        } else if (rows.length > 1){
-          res.send('{"success" : false, "result": "用户名存在重复，请联系管理员"}');
-          return;
-        };
+	var selectSQL = 'select * from user where username = "' + username + '"';
+	conn.query(selectSQL, function (err, rows) {
+		if (err) {
+			console.log(err);
+			res.send('{"success" : false, "result": "datebase error"}');
+		} else {
+			if (rows.length == 0) {
+				res.send('{"success" : false, "result": "用户名不存在"}');
+				return;
+			} else if (rows.length > 1){
+				res.send('{"success" : false, "result": "用户名存在重复，请联系管理员"}');
+				return;
+			};
 
-        if (password == rows[0]['password']) {
-          res.send('{"success" : true, "result": "登陆成功"}');
-        } else {
-          res.send('{"success" : false, "result": "用户名密码错误"}');
-        }
-      }
-  });
-
+			if (password == rows[0]['password']) {
+				res.send('{"success" : true, "result": "登陆成功"}');
+			} else {
+				res.send('{"success" : false, "result": "用户名密码错误"}');
+			}
+		}
+	});
 })
 
 app.get('/change_pwd', function (req, res) {
@@ -195,21 +198,19 @@ app.get('/change_pwd', function (req, res) {
 })
 
 app.get('/getReportsByName', function (req, res) {
-  var limit = req.query.limit;
-  var username = req.query.username;
-  if (username == '李培正' || username == '裘鸿' || username == 'all') {
-      selectSQL = 'select * from week_reports order by id desc limit ' + limit;
-  } else {
-      selectSQL = 'select * from week_reports WHERE submitter = "'+ username +'" ORDER BY id DESC LIMIT ' + limit;
-  }
+	var limit = req.query.limit;
+	var username = req.query.username;
+	if (username == '李培正' || username == '裘鸿' || username == 'all') {
+		selectSQL = 'select * from week_reports order by id desc limit ' + limit;
+	} else {
+		selectSQL = 'select * from week_reports WHERE submitter = "'+ username +'" ORDER BY id DESC LIMIT ' + limit;
+	}
    
-  conn.query(selectSQL, function (err, rows) {
-      if (err) console.log(err);
-      console.log("SELECT ==> ");
-      // console.log(rows);
-      res.send(rows);
-  });
-
+	conn.query(selectSQL, function (err, rows) {
+		if (err) console.log(err);
+		console.log("SELECT ==> ");
+		res.send(rows);
+	});
 })
 
 // app.get('/getLastReports', function (req, res) {
@@ -225,8 +226,25 @@ app.get('/getReportsByName', function (req, res) {
 
 // })
 
-var server = app.listen(8084, function () {
-  var host = server.address().address;
-  var port = server.address().port;
-  console.log("应用实例，访问地址为 http://" + host + ":" + port);
+app.get('/getProjectByName', function (req, res) {
+	var username = req.query.username;
+	if (username == '李培正' || username == '裘鸿' || username == 'all') {
+		selectSQL = 'select * from project';
+		conn.query(selectSQL, function (err, rows) {
+			if (err) console.log(err);
+			console.log("SELECT ==> ");
+			res.send(rows);
+		});
+	} else {
+		//TODO: 2个项目经理的情况
+		selectSQL = 'select * from project WHERE manager = "'+ username +'"';
+		conn.query(selectSQL, function (err, rows) {
+			if (err) console.log(err);
+			console.log("SELECT ==> ");
+			res.send(rows);
+		});
+	}
+
 })
+
+
