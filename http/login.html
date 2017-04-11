@@ -69,9 +69,16 @@
 					localStorage.username = username;
 					localStorage.lastUsername = username;
 					setTimeout(function() {
-						mui.openWindow({
-							url: 'report_submit.html'
-						})
+						if (pwd == '12345') {
+							localStorage.pwd = pwd;
+							mui.openWindow({
+								url: 'change_password.html'
+							})
+						} else {
+							mui.openWindow({
+								url: 'report_submit.html'
+							})
+						}
 					},800);
 				} else{
 					mui.toast(data['result']);
