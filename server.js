@@ -155,7 +155,7 @@ app.get('/login', function (req, res) {
 			};
 
 			if (password == rows[0]['password']) {
-				res.send('{"success" : true, "result": "登陆成功"}');
+				res.send('{"success" : true, "result": "登陆成功", "permission": '+rows[0]['permission']+'}');
 			} else {
 				res.send('{"success" : false, "result": "用户名密码错误"}');
 			}
@@ -200,7 +200,7 @@ app.get('/change_pwd', function (req, res) {
 app.get('/getReportsByName', function (req, res) {
 	var limit = req.query.limit;
 	var username = req.query.username;
-	if (username == '李培正' || username == '裘鸿' || username == 'all') {
+	if (username == 'all') {
 		selectSQL = 'select * from week_reports order by id desc limit ' + limit;
 	} else {
 		selectSQL = 'select * from week_reports WHERE submitter = "'+ username +'" ORDER BY id DESC LIMIT ' + limit;

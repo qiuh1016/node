@@ -68,6 +68,7 @@
 					mui.toast('登陆成功');
 					localStorage.username = username;
 					localStorage.lastUsername = username;
+					localStorage.permission = data['permission'];
 					setTimeout(function() {
 						if (pwd == '12345') {
 							localStorage.pwd = pwd;

@@ -135,6 +135,7 @@
 		mui.confirm('是否要退出登陆?','提示',['取消','退出'], function (e) {
 			if (e.index == 1) {
 				localStorage.removeItem('username');
+				localStorage.removeItem('permission');
 				mui.openWindow({
 					url:'login.html'
 				});
