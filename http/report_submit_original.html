@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-icon mui-icon-person mui-pull-left" href="#sheet1"></a>
+	    <h1 class="mui-title">周报提交</h1>
+	    <a class="mui-icon mui-icon-bars mui-pull-right" href="report_list_pullrefresh_main.html"></a>
+	</header>
+
+	<div class="mui-content">
+		<br>
+		<form>
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*项目代号：</p>
+				<input type="text" id="project" name="project" class="mui-input-clear" style="font-size: 13px; color: #555555;" >
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*提交人：</p>
+				<input type="text" id="submitter" name="submitter" readonly="readonly" style="font-size: 13px; color: #AAAAAA;">
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>本周要重点报告的工作：</p>
+				<textarea type="text" id="importance" name="importance" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>本周日常工作完成情况：</p>
+				<textarea type="text" id="completed" name="completed" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>存在的问题：</p>
+				<textarea type="text" id="issures" name="issures" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>下周重点工作计划：</p>
+				<textarea type="text" id="plan" name="plan" class="mui-input-clear" style="font-size: 13px; color: #555555;"></textarea>
+			</div>
+			
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="submitReport()">提交</button>
+			</div>
+			<br>
+			
+		</form>
+		
+		<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action">
+		    <!-- 可选择菜单 -->
+		    <ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="change_password.html">修改密码</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a onclick="logout()">退出登陆</a>
+				</li>
+		    </ul>
+		    <!-- 取消菜单 -->
+		    <ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#sheet1"><b>取消</b></a>
+				</li>
+		    </ul>
+		</div>
+	
+	</div>
+
+</body>
+<script type="text/javascript" charset="utf-8">
+
+	window.onload = function() {
+		if (localStorage.username == null) {
+			mui.openWindow({
+				url: 'login.html'
+			});
+		} else{
+			document.getElementById('submitter').value = localStorage.username;
+		}
+	}
+	
+//	document.getElementById('button').addEventListener('tap', function() {
+//		submitReport();
+//	});
+
+	function submitReport() {
+		var project = document.getElementById('project').value;
+		var submitter = document.getElementById('submitter').value;
+		var importance = document.getElementById('importance').value;
+		var completed = document.getElementById('completed').value;
+		var issures = document.getElementById('issures').value;
+		var plan = document.getElementById('plan').value;
+		
+		if (project == "") {
+			mui.toast('项目代号不能为空');
+			return;
+		}
+		
+		if (submitter == "") {
+			mui.toast('提交人不能为空');
+			return;
+		}
+		
+		var _url = '/report_submit';
+		mui.getJSON(_url, {project:project, submitter: submitter, importance: importance, completed: completed, issures: issures, plan: plan}, function(data) {
+				//获得服务器响应
+				dataJson = data;
+				if (data['success']) {
+					mui.alert('提交成功','提示','OK',function (e) {
+					   mui.openWindow({
+					   		url:'report_list.html'
+					   });
+					},'div')
+				} else{
+					mui.toast('提交失败');
+				}
+			}
+		);
+	}
+	
+	function logout() {
+		mui('.mui-popover').popover('hide', document.getElementById('sheet1'));
+		mui.confirm('是否要退出登陆?','提示',['取消','退出'], function (e) {
+			if (e.index == 1) {
+				localStorage.removeItem('username');
+				localStorage.removeItem('permission');
+				mui.openWindow({
+					url:'login.html'
+				});
+			}
+		},'div')
+	}
+
+</script>
+</html>
