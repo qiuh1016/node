@@ -54,6 +54,11 @@
 	var plan;
 	
 	window.onload = function() {
+		
+		
+	}
+	
+	mui.ready(function() {
 		databaseID = localStorage.id;
 		project = localStorage.project;
 		submitter = localStorage.submitter;
@@ -70,12 +75,7 @@
 			"本周日常工作完成情况：\n" + localStorage.completed + "\n\n" +
 			"存在的问题：\n" + localStorage.issures + "\n\n" +
 			"下周重点工作计划：\n" + localStorage.plan;
-		
-	}
-	
-	mui.ready(function() {
-		
-	})
+	});
 	
 	window.onabort = function() {
 		localStorage.removeItem('id');
@@ -97,9 +97,6 @@
 					if (data['success']) {
 						mui.toast('删除成功');
 						setTimeout(function() {
-//							mui.openWindow({
-//								url:'report_list.html'
-//							})
 							mui.back();
 						}, 800);
 					} else{
