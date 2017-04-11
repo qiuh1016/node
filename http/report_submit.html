@@ -160,9 +160,12 @@
 		var id = this.getElementsByTagName('a')[0].id;
 		var i = id.substring(1, id.length);
 		if (i == 1) {
-			mui.openWindow({
-				url:'report_list_pullrefresh_main.html'
-			});
+			setTimeout(function() {
+				mui.openWindow({
+					url:'report_list_pullrefresh_main.html'
+				});
+			},1);
+			
 		} else if (i == 2) {
 			mui.openWindow({
 				url:'change_password.html'
