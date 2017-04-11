@@ -86,9 +86,17 @@
 				dataJson = data;
 				if (data['success']) {
 					mui.alert('修改成功','提示','OK',function (e) {
-					   mui.openWindow({
-					   		url:'report_list.html'
-					   });
+//					   mui.openWindow({
+//					   		url:'report_list.html'
+//					   });
+						localStorage.id = id;
+						localStorage.project = project;
+						localStorage.submitter = submitter;
+						localStorage.importance = importance;
+						localStorage.completed = completed;
+						localStorage.issures = issures;
+						localStorage.plan = plan;
+						mui.back();
 					},'div')
 				} else{
 					mui.toast('删除失败');

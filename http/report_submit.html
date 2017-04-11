@@ -12,7 +12,7 @@
 				background-color: #efeff4;
 			}
 			a.mui-navigate-right {
-				font-size: 14px;
+				font-size: 13px;
 			}
 			/*p {
 				text-indent: 22px;
@@ -53,12 +53,11 @@
 			<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
 				<div class="mui-scroll">
 					<!-- 菜单具体展示内容 -->
-				    <div class="title">导航菜单</div>
-					<div class="content">
+				    <div class="title" style="margin-bottom: 25px;">功能选择</div>
+					<!--<div class="content">
 						这是可拖动式侧滑菜单示例，你可以在这里放置任何内容；关闭侧滑菜单有多种方式： 1.在手机屏幕任意位置向左拖动(drag)；2.点击本侧滑菜单页之外的任意位置; 3.点击如下红色按钮
 						<span class="android-only">；4.Android手机按back键；5.Android手机按menu键</span>。
-					</div>
-					<div class="title" style="margin-bottom: 25px;">功能选择</div>
+					</div>-->
 					<ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted">
 						<li class="mui-table-view-cell">
 							<a class="mui-navigate-right" id="a1">
@@ -67,20 +66,38 @@
 						</li>
 						<li class="mui-table-view-cell">
 							<a class="mui-navigate-right" id="a2">
-								修改密码
+								月底考评(待开发)
 							</a>
 						</li>
 						<li class="mui-table-view-cell">
 							<a class="mui-navigate-right" id="a3">
-								退出登陆
+								人月统计(待开发)
+							</a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a class="mui-navigate-right" id="a4">
+								合同领号(待开发)
 							</a>
 						</li>
 					</ul>
 					
+					<div class="title" style="margin-bottom: 25px;">用户设置</div>
+					<ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted">
+						<li class="mui-table-view-cell">
+							<a class="mui-navigate-right" id="a5">
+								修改密码
+							</a>
+						</li>
+						<li class="mui-table-view-cell" style="background-color: #ED6A65;">
+							<a class="mui-navigate-right" id="a6" >
+								退出登陆
+							</a>
+						</li>
+					</ul>
 
-					<p style="margin: 10px 15px; margin-top: 25px;">
-						<button type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px; font-size: 17px;" onclick="logout()">退出登陆</button>
-					</p>
+					<!--<p style="margin: 10px 15px; margin-top: 25px;">
+						<button type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px; font-size: 16px;" onclick="logout()">退出登陆</button>
+					</p>-->
 				</div>
 			</div>
 		</aside>
@@ -134,8 +151,6 @@
 						<br>
 						
 					</form>
-			
-				
 	      		</div>
 			</div>  
 			<!-- off-canvas backdrop 阴影-->
@@ -164,10 +179,16 @@
 				url:'report_list_pullrefresh_main.html'
 			});
 		} else if (i == 2) {
+			mui.toast('月底考评(待开发)');
+		} else if (i == 3) {
+			mui.toast('人月统计(待开发)');
+		} else if (i == 4) {
+			mui.toast('合同领号(待开发)');
+		} else if (i == 5) {
 			mui.openWindow({
 				url:'change_password.html'
 			});
-		} else if (i == 3) {
+		} else if (i == 6) {
 			logout();
 		}
 	})  
