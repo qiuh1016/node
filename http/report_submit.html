@@ -76,7 +76,7 @@
 						</li>
 						<li class="mui-table-view-cell">
 							<a class="mui-navigate-right" id="a4">
-								合同领号(待开发)
+								合同领号
 							</a>
 						</li>
 					</ul>
@@ -183,7 +183,10 @@
 		} else if (i == 3) {
 			mui.toast('人月统计(待开发)');
 		} else if (i == 4) {
-			mui.toast('合同领号(待开发)');
+//			mui.toast('合同领号(待开发)');
+			mui.openWindow({
+				url:'contract_get_number.html'
+			});
 		} else if (i == 5) {
 			mui.openWindow({
 				url:'change_password.html'

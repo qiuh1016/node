@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/mui.picker.min.css" />
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">合同领号</h1>
+	    <a id="contract_list_button" class="mui-icon mui-icon-bars mui-pull-right" href="report_list_pullrefresh_main.html"></a>
+	</header>
+
+	<div class="mui-content">
+		<br>
+		<form>
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>合同名称：</p>
+				<input type="text" id="contract_name" class="mui-input-clear" placeholder="如：xxx项目技术开发合同，xxx项目委托检测合同……" style="font-size: 13px; color: #555555;" >
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>对方单位：</p>
+				<input type="text" id="company" class="mui-input-clear" style="font-size: 13px; color: #555555;">
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 10px 10px;">
+				<p>合同类型：</p>
+				<ul class="mui-table-view mui-table-view-radio">
+					<li class="mui-table-view-cell mui-selected">
+						<a class="mui-navigate-right" style="font-size: 13px; color: #555555;">付款合同</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right" style="font-size: 13px; color: #555555;">收款合同</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>金额（元）：</p>
+				<input type="text" id="money" class="mui-input-clear" style="font-size: 13px; color: #555555;">
+			</div>
+			
+			<p style="margin: 0px 10px 0px 10px;">签订日期：</p>
+			<p class="date_input" style="margin: 0px 10px 0px 10px;"></p>
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" data-options='{"type":"date","beginYear":2017,"endYear":2017}' class="btn mui-btn mui-btn-block" style="font-size: 13px; color: #555555;">选择日期选择</button>
+			</div>
+			
+			<p style="margin: 0px 10px 0px 10px;">起始日期：</p>
+			<p class="date_input" style="margin: 0px 10px 0px 10px;"></p>
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" data-options='{"type":"date","beginYear":2017,"endYear":2017}'  class="btn mui-btn mui-btn-block" style="font-size: 13px; color: #555555;">起始日期选择</button>
+			</div>
+			
+			<p style="margin: 0px 10px 0px 10px;">完成日期：</p>
+			<p class="date_input" style="margin: 0px 10px 0px 10px;"></p>
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" data-options='{"type":"date","beginYear":2017,"endYear":2020}'  class="btn mui-btn mui-btn-block" style="font-size: 13px; color: #555555;">完成日期选择</button>
+			</div>
+			
+			<div class="mui-button-row" style="margin: 0px 10px 30px 10px;">
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="getContractNumber()">领取编号</button>
+			</div>
+			
+		</form>
+		
+	</div>
+
+</body>
+<script type="text/javascript" charset="utf-8">
+
+	//日期选择
+	(function($) {
+		$.init();
+		$('.btn')[0].addEventListener('tap', function() {
+			var optionsJson = this.getAttribute('data-options') || '{}';
+			var options = JSON.parse(optionsJson);
+　　　　　	var picker = new $.DtPicker(options);
+　　　　　	picker.show(function(rs) {
+　　　　　　　	$('.date_input')[0].innerText = rs.text;
+　　　　　　　	picker.dispose();
+　　　　　	});
+		}, false);
+		
+		$('.btn')[1].addEventListener('tap', function() {
+			var optionsJson = this.getAttribute('data-options') || '{}';
+			var options = JSON.parse(optionsJson);
+　　　　　	var picker = new $.DtPicker(options);
+　　　　　	picker.show(function(rs) {
+　　　　　　　	$('.date_input')[1].innerText = rs.text;
+　　　　　　　	picker.dispose();
+　　　　　	});
+		}, false);
+			
+		$('.btn')[2].addEventListener('tap', function() {
+			var optionsJson = this.getAttribute('data-options') || '{}';
+			var options = JSON.parse(optionsJson);
+　　　　　	var picker = new $.DtPicker(options);
+　　　　　	picker.show(function(rs) {
+　　　　　　　	$('.date_input')[2].innerText = rs.text;
+　　　　　　　	picker.dispose();
+　　　　　	});
+		}, false);
+	})(mui);
+	
+	//单选框
+	var contract_type = "付款合同";
+	var list = document.querySelector('.mui-table-view.mui-table-view-radio');
+	list.addEventListener('selected',function(e){
+		contract_type = e.detail.el.innerText
+	});
+
+	window.onload = function() {
+		if (localStorage.username == null) {
+			mui.openWindow({
+				url: 'login.html'
+			});
+			return;
+		} else if (localStorage.permission == 0) {
+			mui('#contract_list_button')[0].style.visibility = "hidden";
+		}
+		mui.alert('请务必正确选择“合同类型”','提示','好的',null,'div')
+	}
+
+	function getContractNumber() {
+		var contract_name = mui('#contract_name')[0].value;
+		var company = mui('#company')[0].value;
+		var money = mui('#money')[0].value;
+		var sign_date = mui('.date_input')[0].innerText;
+		var begin_date = mui('.date_input')[1].innerText;
+		var end_date = mui('.date_input')[2].innerText;
+	
+		if (contract_name == '' || company == '' || money == '' || sign_date == '' || begin_date == '' || end_date == '') {
+			mui.alert('请填写完整信息','提示','好的',null,'div')
+			return;
+		}
+		
+		var confirmInfo = 
+			'领号人：'	+ localStorage.username + '\n' +
+			'合同名称：'	+ contract_name	+ '\n' +
+			'对方单位：'	+ company		+ '\n' +
+			'合同类型：'	+ contract_type	+ '\n' +
+			'金额：'		+ money			+ '元\n' +
+			'签订日期：'	+ sign_date		+ '\n' +
+			'起始日期：'	+ begin_date		+ '\n' +
+			'完成日期：'	+ end_date;
+		mui.confirm(confirmInfo,'请核对信息',['取消','领号'],function (e) {
+			if (e.index == 1) {
+				mui.toast('message');
+			}
+		},'div')
+		return;
+		
+		var _url = '/report_submit';
+		mui.getJSON(_url, {project:project, submitter: submitter, importance: importance, completed: completed, issures: issures, plan: plan}, function(data) {
+				//获得服务器响应
+				dataJson = data;
+				if (data['success']) {
+					mui.alert('提交成功','提示','OK',function (e) {
+					   mui.openWindow({
+					   		url:'report_list.html'
+					   });
+					},'div')
+				} else{
+					mui.toast('提交失败');
+				}
+			}
+		);
+	}
+
+</script>
+<script type="text/javascript" src="js/mui.picker.min.js" ></script>
+</html>
