@@ -79,7 +79,7 @@
 				var showReportNumber = 30;
 				var totalReportNumber = 0;
 				var username = localStorage.username;
-				if (localStorage.permission == 1) {
+				if (localStorage.permission <= 1) {
 					username = 'all';
 				}
 				var _url = '/getReportsByName';
@@ -123,9 +123,10 @@
 				var totalReportNumber = 0;
 				
 				var username = localStorage.username;
-				if (localStorage.permission == 1) {
+				if (localStorage.permission <= 1) {
 					username = 'all';
 				}
+	
 				var _url = '/getReportsByName';
 				
 				mui.getJSON(_url, {limit: showReportNumber, username: username}, function(data) {

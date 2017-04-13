@@ -116,7 +116,7 @@
 	var contract_type = "付款合同";
 	var list = document.querySelector('.mui-table-view.mui-table-view-radio');
 	list.addEventListener('selected',function(e){
-		contract_type = e.detail.el.innerText
+		contract_type = e.detail.el.innerText.replace('\n', '');
 	});
 
 	window.onload = function() {
@@ -125,8 +125,6 @@
 				url: 'login.html'
 			});
 			return;
-		} else if (localStorage.permission == 0) {
-			mui('#contract_list_button')[0].style.visibility = "hidden";
 		}
 		mui.alert('请务必正确选择“合同类型”','提示','好的',null,'div')
 	}
@@ -153,28 +151,30 @@
 			'签订日期：'	+ sign_date		+ '\n' +
 			'起始日期：'	+ begin_date		+ '\n' +
 			'完成日期：'	+ end_date;
-		mui.confirm(confirmInfo,'请核对信息',['取消','领号'],function (e) {
+		mui.confirm(confirmInfo,'请核对信息',['取消','领取'],function (e) {
 			if (e.index == 1) {
-				mui.toast('message');
+				var _url = '/contract_get_number';
+				var param =  {	submitter		: localStorage.username, 
+								contract_number	: "HDYFF0001", 
+								contract_name	: contract_name,
+								company			: company,
+								contract_type	: contract_type,
+								money			: money,
+								sign_date		: sign_date,
+								begin_date		: begin_date,
+								end_date			: end_date
+						};
+				mui.getJSON(_url, param, function(data) {
+					if (data['success']) {
+						mui.alert('合同编号领取成功：'+data['contract_number'],'提示','好的',function (e) {
+						   mui.back();
+						},'div')
+					} else {
+						mui.toast('failed');
+					}
+				});
 			}
 		},'div')
-		return;
-		
-		var _url = '/report_submit';
-		mui.getJSON(_url, {project:project, submitter: submitter, importance: importance, completed: completed, issures: issures, plan: plan}, function(data) {
-				//获得服务器响应
-				dataJson = data;
-				if (data['success']) {
-					mui.alert('提交成功','提示','OK',function (e) {
-					   mui.openWindow({
-					   		url:'report_list.html'
-					   });
-					},'div')
-				} else{
-					mui.toast('提交失败');
-				}
-			}
-		);
 	}
 
 </script>

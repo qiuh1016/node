@@ -248,3 +248,88 @@ app.get('/getProjectByName', function (req, res) {
 })
 
 
+app.get('/contract_get_number', function (req, res) {
+	console.log("contract_get_number GET 请求");
+
+	var submitter 		= req.query.submitter;
+	var contract_number = req.query.contract_number;
+	var contract_name 	= req.query.contract_name;
+	var company 		= req.query.company;
+	var contract_type 	= req.query.contract_type;
+	var money 			= req.query.money;
+	var sign_date 		= req.query.sign_date;
+	var begin_date 		= req.query.begin_date;
+	var end_date 		= req.query.end_date;
+
+	var tableName;
+	var contract_sum = 0;
+	if (contract_type == '付款合同') {
+		tableName = 'contract_number_f';
+	} else if (contract_type == '收款合同') {
+		tableName = 'contract_number_s';
+	}
+
+	var ForS = contract_type == '付款合同' ? 'F' : 'S';
+	var date = new Date();
+	var year = date.getFullYear();
+
+	//先查询合同数
+	conn.query('select count(*) from ' + tableName + ' where year = "' + year + '"', function (err, res1) {
+		if (err) {
+			console.log(err);
+			res.send('{"success" : false}');
+			return;
+		} else {
+			contract_sum = res1[0]['count(*)'] + 1;
+			console.log('contract_sum: ' + contract_sum);
+
+			var contract_digital_number = "";
+			if (contract_sum < 10) {
+				contract_digital_number = '000' + contract_sum;
+			} else if (contract_sum >=10 || contract_sum < 100) {
+				contract_digital_number = '00' + contract_sum;
+			} else if (contract_sum >=100 || contract_sum < 1000) {
+				contract_digital_number = '0' + contract_sum;
+			} else if (contract_sum >=1000 || contract_sum < 10000) {
+				contract_digital_number = contract_sum;
+			}
+
+			
+			contract_number = 'HDYF' + ForS + year.toString().substring(2,4) + contract_digital_number;
+
+			insertSQL = 'INSERT INTO ' + tableName + ' SET ';
+			insertSQL = insertSQL + 'submitter = "' 		+ submitter			+ '",';
+			insertSQL = insertSQL + 'contract_number = "' 	+ contract_number 	+ '",';
+			insertSQL = insertSQL + 'contract_name = "'		+ contract_name		+ '",';
+			insertSQL = insertSQL + 'company = "'			+ company			+ '",';
+			insertSQL = insertSQL + 'money = "'				+ money				+ '",';	
+			insertSQL = insertSQL + 'sign_date = "'			+ sign_date			+ '",';
+			insertSQL = insertSQL + 'begin_date = "'		+ begin_date		+ '",';
+			insertSQL = insertSQL + 'end_date = "'			+ end_date			+ '",';
+			insertSQL = insertSQL + 'year = "'				+ year 				+ '";';
+
+			conn.query(insertSQL, function (err, res1) {
+				if (err) {
+					console.log(err);
+					res.send('{"success" : false}');
+				} else {
+					res.send('{"success" : true, "contract_number": "'+contract_number+'"}');
+		    	}
+			});
+    	}
+	});
+
+	
+})
+
+app.get('/test', function (req, res) {
+	console.log("test GET 请求");
+	var username = req.query.submitter;
+	if (username == "123") {
+		res.send('{"success" : true}');
+	} else {
+		res.send('{"success" : false}');
+	}
+	
+})
+
