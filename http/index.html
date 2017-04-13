@@ -9,6 +9,14 @@
 	    <script type="text/javascript" charset="utf-8">
 	      	mui.init();
 	    </script>
+	    <style>
+	    		div.title {
+	    			align-content: center;
+	    			width: 100%;
+	    			font-size: 15px;
+	    			color: #000000;
+	    		}
+	    </style>
 	</head>
 	<body>
 		
@@ -16,53 +24,93 @@
 		    <h1 class="mui-title">海电院研发办公系统</h1>
 		</header>
 	
-		<div class="mui-content">
+		<div class="mui-content ">
+			
+			<div class="mui-content-padded">
+				<div id="user" class="title">当前用户：</div>
+			</div>
+			
 			<ul class="mui-table-view mui-grid-view mui-grid-9">
-			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-			    <a href="report_submit_original.html">
-			        <span class="mui-icon mui-icon-home"></span>
-			        <div class="mui-media-body">周报提交</div>
-			    </a>
-			</li>
-			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-			    <a href="report_list_pullrefresh_main.html">
-			        <span class="mui-icon mui-icon-email"><!--<span class="mui-badge mui-badge-red">5</span>--></span>
-			        <div class="mui-media-body">周报查看</div>
-			    </a>
-			</li>
-			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-			    <a href="contract_get_number.html">
-			        <span class="mui-icon mui-icon-chatbubble"></span>
-			        <div class="mui-media-body">合同编号领取</div>
-			    </a>
-			</li>
-			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-			    <a href="contract_list_pullrefresh_main.html">
-			        <span class="mui-icon mui-icon-location"></span>
-			        <div class="mui-media-body">合同编号查看</div>
-			    </a>
-			</li>
-			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-			    <a href="#">
-			        <span class="mui-icon mui-icon-search"></span>
-			        <div class="mui-media-body">月底考核</div>
-			    </a>
-			</li>
-			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
-			    <a href="#">
-			        <span class="mui-icon mui-icon-phone"></span>
-			        <div class="mui-media-body">人月统计</div>
-			    </a>
-			</li>
-			    </ul>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+				    <a href="report_submit_original.html">
+				        <span class="mui-icon mui-icon-compose"></span>
+				        <div class="mui-media-body">周报提交</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+				    <a href="report_list_pullrefresh_main.html">
+				        <span class="mui-icon mui-icon-search"><!--<span class="mui-badge mui-badge-red">5</span>--></span>
+				        <div class="mui-media-body">周报查看</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+				    <a onclick="todo()">
+				        <span class="mui-icon mui-icon-paperclip"></span>
+				        <div class="mui-media-body">月底考核</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+				    <a href="contract_get_number.html">
+				        <span class="mui-icon mui-icon-download"></span>
+				        <div class="mui-media-body">合同编号领取</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+				    <a href="contract_list_pullrefresh_main.html">
+				        <span class="mui-icon mui-icon-info"></span>
+				        <div class="mui-media-body">合同编号查询</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+				    <a onclick="todo()">
+				        <span class="mui-icon mui-icon-settings"></span>
+				        <div class="mui-media-body">人月统计</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+				    <a href="change_password.html">
+				        <span class="mui-icon mui-icon-locked"></span>
+				        <div class="mui-media-body">修改密码</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+				    <a onclick="logout()">
+				        <span class="mui-icon mui-icon-undo"></span>
+				        <div class="mui-media-body">退出登陆</div>
+				    </a>
+				</li>
+		    </ul>
 			
 		</div>
 	
 	</body>
 	<script type="text/javascript" charset="utf-8">
 	
+		window.onload = function() {
+			if (localStorage.username == null) {
+				mui.openWindow({
+					url: 'login.html'
+				});
+			} else {
+				mui('#user')[0].innerText = '当前用户：' + localStorage.username;
+			}
+		}
 		
+		function logout() {
+			mui.confirm('是否要退出登陆?','提示',['取消','退出'], function (e) {
+				if (e.index == 1) {
+					localStorage.removeItem('username');
+					localStorage.removeItem('permission');
+					mui.openWindow({
+						url:'login.html'
+					});
+				}
+			},'div')
+		}
 		
+		function todo() {
+			mui.toast('待开发');
+		}
 		
 	</script>
 </html>

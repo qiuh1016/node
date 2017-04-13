@@ -13,7 +13,7 @@
 <body>
 	
 	<header class="mui-bar mui-bar-nav">
-		<a class="mui-icon mui-icon-person mui-pull-left" href="#sheet1"></a>
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 	    <h1 class="mui-title">周报提交</h1>
 	    <a class="mui-icon mui-icon-bars mui-pull-right" href="report_list_pullrefresh_main.html"></a>
 	</header>
@@ -90,10 +90,6 @@
 			document.getElementById('submitter').value = localStorage.username;
 		}
 	}
-	
-//	document.getElementById('button').addEventListener('tap', function() {
-//		submitReport();
-//	});
 
 	function submitReport() {
 		var project = document.getElementById('project').value;
@@ -106,9 +102,7 @@
 		if (project == "") {
 			mui.toast('项目代号不能为空');
 			return;
-		}
-		
-		if (submitter == "") {
+		} else if (submitter == "") {
 			mui.toast('提交人不能为空');
 			return;
 		}
@@ -119,28 +113,13 @@
 				dataJson = data;
 				if (data['success']) {
 					mui.alert('提交成功','提示','OK',function (e) {
-					   mui.openWindow({
-					   		url:'report_list.html'
-					   });
+					   mui.back();
 					},'div')
 				} else{
 					mui.toast('提交失败');
 				}
 			}
 		);
-	}
-	
-	function logout() {
-		mui('.mui-popover').popover('hide', document.getElementById('sheet1'));
-		mui.confirm('是否要退出登陆?','提示',['取消','退出'], function (e) {
-			if (e.index == 1) {
-				localStorage.removeItem('username');
-				localStorage.removeItem('permission');
-				mui.openWindow({
-					url:'login.html'
-				});
-			}
-		},'div')
 	}
 
 </script>

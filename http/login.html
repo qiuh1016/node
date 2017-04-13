@@ -44,7 +44,7 @@
 	window.onload = function() {
 		if (localStorage.username != null) {
 			mui.openWindow({
-				url: 'report_submit.html'
+				url: 'index.html'
 			});
 		} else if (localStorage.lastUsername != null) {
 			document.getElementById('username').value = localStorage.lastUsername;
@@ -77,7 +77,7 @@
 							})
 						} else {
 							mui.openWindow({
-								url: 'report_submit.html'
+								url: 'index.html'
 							})
 						}
 					},800);

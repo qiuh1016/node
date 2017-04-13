@@ -55,8 +55,8 @@
 			mui('.mui-table-view').on('tap', '.mui-table-view-cell', function () {  
 				var id = this.getElementsByTagName('a')[0].id;
 				var i = id.substring(1, id.length);
-				
-				var contract_type = dataJson[i]['contract_type'] == 'F' ? '付款合同' : '收款合同';
+
+				var contract_type = dataJson[i]['ForS'] == 'F' ? '付款合同' : '收款合同';
 				
 				var contractInfo = 
 					'领号人：'	+ dataJson[i]['submitter'] 		+ '\n' +
@@ -153,25 +153,6 @@
 				);
 				
 			}
-		
-			
-			
-			/*
-			function showDetail(i) {
-				localStorage.id = dataJson[i]['id'];
-				localStorage.project = dataJson[i]['project'];
-				localStorage.submitter = dataJson[i]['submitter'];
-				localStorage.add_time = makeDate(dataJson[i]['add_time']);
-				localStorage.importance = dataJson[i]['importance'];
-				localStorage.completed = dataJson[i]['completed'];
-				localStorage.issures = dataJson[i]['issures'];
-				localStorage.plan = dataJson[i]['plan'];
-				
-				mui.openWindow({
-				    url:'report_detail.html',
-				});
-			}
-			*/
 			
 		</script>
 		<script type="text/javascript" src="js/util.js" ></script>
