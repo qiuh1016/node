@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+	</head>
+
+	<body>
+		<!--下拉刷新容器-->
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<!--卡片格式的列表-->
+				<div class="mui-card" style="margin-bottom: 35px;">
+					<!--数据列表-->
+					<ul class="mui-table-view mui-table-view-chevron" id="#ul_id"></ul>
+				</div>
+			</div>
+		</div> 
+		<script src="js/mui.min.js"></script>
+		<script>
+			
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						callback: pulldownRefresh
+					},
+//					up: {
+//						contentrefresh: '正在加载...',
+//						callback: pullupRefresh
+//					}
+				}
+			});
+			
+			if (mui.os.plus) {
+				mui.plusReady(function() {
+					setTimeout(function() {
+						mui('#pullrefresh').pullRefresh().pulldownLoading();
+					}, 500);
+				});
+			} else {
+				mui.ready(function() {
+					mui('#pullrefresh').pullRefresh().pulldownLoading();
+				});
+			}
+			
+			var dataJson;
+			
+			//点击事件
+			mui('.mui-table-view').on('tap', '.mui-table-view-cell', function () {  
+				var id = this.getElementsByTagName('a')[0].id;
+				var i = id.substring(1, id.length);
+				
+				var contract_type = dataJson[i]['contract_type'] == 'F' ? '付款合同' : '收款合同';
+				
+				var contractInfo = 
+					'领号人：'	+ dataJson[i]['submitter'] 		+ '\n' +
+					'合同名称：'	+ dataJson[i]['contract_name']	+ '\n' +
+					'合同编号：'	+ dataJson[i]['contract_number']	+ '\n' +
+					'对方单位：'	+ dataJson[i]['company']			+ '\n' +
+					'合同类型：'	+ contract_type					+ '\n' +
+					'金额：'		+ dataJson[i]['money']			+ '元\n' +
+					'签订日期：'	+ dataJson[i]['sign_date']		+ '\n' +
+					'起始日期：'	+ dataJson[i]['begin_date']		+ '\n' +
+					'完成日期：'	+ dataJson[i]['end_date'];
+				mui.alert(contractInfo,'合同信息','好的',null,'div')
+			})  
+			
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				var table = document.body.querySelector('.mui-table-view');
+				var cells = document.body.querySelectorAll('.mui-table-view-cell');
+				var showReportNumber = 30;
+				var totalReportNumber = 0;
+				var username = localStorage.username;
+				if (localStorage.permission <= 1) {
+					username = 'all';
+				}
+				var _url = '/getContractListByName';
+				
+				setTimeout(function() {
+					mui.getJSON(_url, {username: username}, function(data) {
+							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+							//获得服务器响应
+							dataJson = data;
+							totalReportNumber = data.length;
+							table.innerHTML = "";
+							for (var i = 0; i < totalReportNumber; i++) {
+								var contract_number = data[i]['contract_number'];
+								var submitter = data[i]['submitter'];
+								var create_date = makeDate(data[i]['create_date']);
+								
+								var li = document.createElement('li');
+								li.className = 'mui-table-view-cell';
+								li.innerHTML = '<a class="mui-navigate-right" style="font-size: 13px; color: #555555;" id="a' + i + '"> ' + 
+									submitter + ' - ' + contract_number + ' - ' + create_date + '</a>';
+								table.appendChild(li)
+							}
+							
+						}
+					);
+				},200);
+			}
+			
+			//上拉加载具体业务实现  目前未实现
+			var count = 0;
+			function pullupRefresh() {
+				
+				var table = document.body.querySelector('.mui-table-view');
+				var cells = document.body.querySelectorAll('.mui-table-view-cell');
+				var showReportNumber = 30;
+				var totalReportNumber = 0;
+				
+				var username = localStorage.username;
+				if (localStorage.permission <= 1) {
+					username = 'all';
+				}
+	
+				var _url = '/getReportsByName';
+				
+				mui.getJSON(_url, {limit: showReportNumber, username: username}, function(data) {
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); 
+						//获得服务器响应
+						dataJson = data;
+						totalReportNumber = data.length;
+						
+						for (var i = 0; i < totalReportNumber; i++) {
+							var li = document.createElement('li');
+							li.className = 'mui-table-view-cell';
+							li.innerHTML = '<a class="mui-navigate-right" style="font-size: 13px; color: #555555;" onclick="showDetail('+ i +')"> ' + 
+							data[i]['submitter'] + ' - ' + data[i]['project'] + ' - ' + makeDate(data[i]['add_time']) +
+							'</a>';
+							//查入新数据 如何判断新数据
+							table.insertBefore(li, table.firstChild);
+
+						}
+						
+						if	(totalReportNumber >= showReportNumber) {
+							mui.toast('已显示最近提交的'+ showReportNumber+'条周报');
+						} else {
+							mui.toast('已显示全部'+ totalReportNumber+'条周报');
+						}
+						
+						
+					}
+				);
+				
+			}
+		
+			
+			
+			/*
+			function showDetail(i) {
+				localStorage.id = dataJson[i]['id'];
+				localStorage.project = dataJson[i]['project'];
+				localStorage.submitter = dataJson[i]['submitter'];
+				localStorage.add_time = makeDate(dataJson[i]['add_time']);
+				localStorage.importance = dataJson[i]['importance'];
+				localStorage.completed = dataJson[i]['completed'];
+				localStorage.issures = dataJson[i]['issures'];
+				localStorage.plan = dataJson[i]['plan'];
+				
+				mui.openWindow({
+				    url:'report_detail.html',
+				});
+			}
+			*/
+			
+		</script>
+		<script type="text/javascript" src="js/util.js" ></script>
+	</body>
+
+</html>
