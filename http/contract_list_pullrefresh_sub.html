@@ -76,13 +76,13 @@
 			
 			//搜索烂
 			mui('#searchInput')[0].addEventListener('input',function() {
-				searchContact(this.value);
+				searchContract(this.value);
 			});
 			
 			var table = document.body.querySelector('.mui-table-view');
 			var cells = document.body.querySelectorAll('.mui-table-view-cell');
 			
-			function searchContact(keyword) {
+			function searchContract(keyword) {
 				totalReportNumber = dataJson.length;
 				table.innerHTML = "";
 				for (var i = 0; i < totalReportNumber; i++) {

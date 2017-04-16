@@ -78,7 +78,7 @@
 			var username = dataJson[i]['username'];
 			var department = dataJson[i]['department'];
 			
-			if (username.indexOf(keyword) != -1) {
+			if (username.indexOf(keyword) != -1 || department.indexOf(keyword) != -1) {
 				list.innerHTML += 
 				"<li class='mui-table-view-cell' onclick='showDetail("+ i +")'>" + 
 				"<a class='mui-navigate-right'>" +
