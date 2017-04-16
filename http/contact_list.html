@@ -22,8 +22,10 @@
 	</header>
 
 	<div class="mui-content">
-		
-		<div class="mui-card" style="margin-bottom: 35px;">
+		<div class="mui-input-row mui-search" style="margin-top: 10px;margin-left: 10px;margin-right: 10px;">
+		    <input id="searchInput" type="search" class="mui-input-clear" placeholder="" style="font-size: 14px;">
+		</div>
+		<div class="mui-card" style="margin-bottom: 35px; margin-top: 0px;">
 			<ul class="mui-table-view" id="ul"></ul>
 		</div>
 	
@@ -43,8 +45,14 @@
 //		mui.alert(contactInfo,dataJson[i]['username'],'好的',null,'div')
 //	})  
 	
+	mui('#searchInput')[0].addEventListener('input',function() {
+		searchContact(this.value);
+	});
+	
+	var list = document.getElementById('ul');
+	
 	window.onload = function() {
-		var list = document.getElementById('ul');
+		
 		list.innerHTML = "";
 		var _url = '/getAllContact';
 		mui.getJSON(_url, null, function(data) {
@@ -61,8 +69,24 @@
 						"</a></li>";
 				}
 			}
-	);
-
+		);
+	}
+	
+	function searchContact(keyword) {
+		list.innerHTML = '';
+		for (var i in dataJson) {
+			var username = dataJson[i]['username'];
+			var department = dataJson[i]['department'];
+			
+			if (username.indexOf(keyword) != -1) {
+				list.innerHTML += 
+				"<li class='mui-table-view-cell' onclick='showDetail("+ i +")'>" + 
+				"<a class='mui-navigate-right'>" +
+				department + "  -  " + username + 
+				"</a></li>";
+			}
+			
+		}
 	}
 
 	function showDetail(i) {
