@@ -20,7 +20,7 @@
 			首页
 		</button>
 	    <h1 class="mui-title">合同领号</h1>
-	    <a id="contract_list_button" class="mui-icon mui-icon-bars mui-pull-right" href="contract_list_pullrefresh_main.html"></a>
+	    <!--<a id="contract_list_button" class="mui-icon mui-icon-bars mui-pull-right" href="contract_list_pullrefresh_main.html"></a>-->
 	</header>
 
 	<div class="mui-content">
@@ -56,13 +56,13 @@
 			<p style="margin: 0px 10px 0px 10px;">签订日期：</p>
 			<p class="date_input" style="margin: 0px 10px 0px 10px;"></p>
 			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
-				<button type="button" data-options='{"type":"date","beginYear":2017,"endYear":2017}' class="btn mui-btn mui-btn-block" style="font-size: 13px; color: #555555;">选择日期选择</button>
+				<button type="button" data-options='{"type":"date","beginYear":2017,"endYear":2020}' class="btn mui-btn mui-btn-block" style="font-size: 13px; color: #555555;">选择日期选择</button>
 			</div>
 			
 			<p style="margin: 0px 10px 0px 10px;">起始日期：</p>
 			<p class="date_input" style="margin: 0px 10px 0px 10px;"></p>
 			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
-				<button type="button" data-options='{"type":"date","beginYear":2017,"endYear":2017}'  class="btn mui-btn mui-btn-block" style="font-size: 13px; color: #555555;">起始日期选择</button>
+				<button type="button" data-options='{"type":"date","beginYear":2017,"endYear":2020}'  class="btn mui-btn mui-btn-block" style="font-size: 13px; color: #555555;">起始日期选择</button>
 			</div>
 			
 			<p style="margin: 0px 10px 0px 10px;">完成日期：</p>
@@ -130,16 +130,16 @@
 			});
 			return;
 		}
-		mui.alert('请务必正确选择“合同类型”','提示','好的',null,'div')
+		mui.alert('请务必正确选择“合同类型”','提示','好的',null,'div');
 	}
 
 	function getContractNumber() {
-		var contract_name = mui('#contract_name')[0].value;
-		var company = mui('#company')[0].value;
-		var money = mui('#money')[0].value;
-		var sign_date = mui('.date_input')[0].innerText;
-		var begin_date = mui('.date_input')[1].innerText;
-		var end_date = mui('.date_input')[2].innerText;
+		var contract_name	= mui('#contract_name')[0]	.value;
+		var company		 	= mui('#company')[0]		.value;
+		var money 			= mui('#money')[0]			.value;
+		var sign_date 		= mui('.date_input')[0]		.innerText;
+		var begin_date 		= mui('.date_input')[1]		.innerText;
+		var end_date 		= mui('.date_input')[2]		.innerText;
 	
 		if (contract_name == '' || company == '' || money == '' || sign_date == '' || begin_date == '' || end_date == '') {
 			mui.alert('请填写完整信息','提示','好的',null,'div')
@@ -148,25 +148,25 @@
 		
 		var confirmInfo = 
 			'领号人：'	+ localStorage.username + '\n' +
-			'合同名称：'	+ contract_name	+ '\n' +
-			'对方单位：'	+ company		+ '\n' +
-			'合同类型：'	+ contract_type	+ '\n' +
-			'金额：'		+ money			+ '元\n' +
-			'签订日期：'	+ sign_date		+ '\n' +
-			'起始日期：'	+ begin_date		+ '\n' +
+			'合同名称：'	+ contract_name			+ '\n' +
+			'对方单位：'	+ company				+ '\n' +
+			'合同类型：'	+ contract_type			+ '\n' +
+			'金额：'		+ money					+ '元\n' +
+			'签订日期：'	+ sign_date				+ '\n' +
+			'起始日期：'	+ begin_date			+ '\n' +
 			'完成日期：'	+ end_date;
 		mui.confirm(confirmInfo,'请核对信息',['取消','领取'],function (e) {
 			if (e.index == 1) {
 				var _url = '/contract_get_number';
-				var param =  {	submitter		: localStorage.username, 
+				var param = {	submitter		: localStorage.username, 
 								contract_name	: contract_name,
 								company			: company,
 								contract_type	: contract_type,
 								money			: money,
 								sign_date		: sign_date,
 								begin_date		: begin_date,
-								end_date			: end_date
-						};
+								end_date		: end_date
+							};
 				mui.getJSON(_url, param, function(data) {
 					if (data['success']) {
 						mui.alert('合同编号领取成功：'+data['contract_number'],'提示','好的',function (e) {

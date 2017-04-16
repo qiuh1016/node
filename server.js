@@ -335,6 +335,16 @@ app.get('/getContractListByName', function (req, res) {
 	});
 })
 
+app.get('/getAllContact', function (req, res) {
+  selectSQL = 'select * from user';
+   
+  conn.query(selectSQL, function (err, rows) {
+    if (err) console.log(err);
+    console.log("getAllContact ==> ");
+    res.send(rows);
+  });
+})
+
 app.get('/test', function (req, res) {
 	console.log("test GET 请求");
 	var username = req.query.submitter;
