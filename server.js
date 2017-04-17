@@ -1,7 +1,6 @@
 var express = require('express');
 var app = express();
 app.use(express.static('http'));
-app.use(express.static('h5'));
 
 //db
 var mysql = require('mysql');
@@ -42,6 +41,9 @@ app.get('/report_submit', function (req, res) {
 	var issures = req.query.issures;
 	var plan = req.query.plan;
 
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - report_submit: " + submitter);
+
 	if (project == "" || submitter == "") {
 		res.send('项目代号和提交者不能为空！'); 
 	} else {
@@ -64,7 +66,7 @@ app.get('/report_submit', function (req, res) {
 })
 
 app.get('/report_update', function (req, res) {
-	console.log("report_update GET 请求");
+
 	var id = req.query.databaseID;
 	var project = req.query.project;
 	var submitter = req.query.submitter;
@@ -72,6 +74,9 @@ app.get('/report_update', function (req, res) {
 	var completed = req.query.completed;
 	var issures = req.query.issures;
 	var plan = req.query.plan;
+
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - report_update: " + submitter);
 	
 	if (project == "" || submitter == "") {
 		res.send('项目代号和提交者不能为空！'); 
@@ -141,9 +146,12 @@ app.get('/report_delete', function (req, res) {
 
  
 app.get('/login', function (req, res) {
-	console.log("登录 请求");
+	
 	var username = req.query.username;
 	var password = req.query.pwd;
+
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - login: " + username);
 
 	var selectSQL = 'select * from user where username = "' + username + '"';
 	conn.query(selectSQL, function (err, rows) {
@@ -169,11 +177,13 @@ app.get('/login', function (req, res) {
 })
 
 app.get('/change_pwd', function (req, res) {
-    console.log("change_pwd GET 请求");
 
     var username = req.query.username;
     var oldPwd = req.query.oldPwd;
     var newPwd = req.query.newPwd;
+
+    var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - change_pwd: " + username);
 
     selectSQL = 'select * from user where username = "' + username + '"';
     var updateSQL = 'UPDATE user SET password = "' + newPwd +'" where username = "' + username + '"';
@@ -205,6 +215,9 @@ app.get('/change_pwd', function (req, res) {
 app.get('/getReportsByName', function (req, res) {
 	var limit = req.query.limit;
 	var username = req.query.username;
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - getReportsByName: " + username);
+
 	if (username == 'all') {
 		selectSQL = 'select * from week_reports order by id desc limit ' + limit;
 	} else {
@@ -213,7 +226,6 @@ app.get('/getReportsByName', function (req, res) {
    
 	conn.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
-		console.log("SELECT ==> ");
 		res.send(rows);
 	});
 })
@@ -231,13 +243,14 @@ app.get('/getReportsByName', function (req, res) {
 
 // })
 
+
+//暂时没用到这个功能
 app.get('/getProjectByName', function (req, res) {
 	var username = req.query.username;
-	if (username == '李培正' || username == '裘鸿' || username == 'all') {
+	if (username == 'all') {
 		selectSQL = 'select * from project';
 		conn.query(selectSQL, function (err, rows) {
 			if (err) console.log(err);
-			console.log("SELECT ==> ");
 			res.send(rows);
 		});
 	} else {
@@ -245,7 +258,6 @@ app.get('/getProjectByName', function (req, res) {
 		selectSQL = 'select * from project WHERE manager = "'+ username +'"';
 		conn.query(selectSQL, function (err, rows) {
 			if (err) console.log(err);
-			console.log("SELECT ==> ");
 			res.send(rows);
 		});
 	}
@@ -264,6 +276,9 @@ app.get('/contract_get_number', function (req, res) {
 	var sign_date 		= req.query.sign_date;
 	var begin_date 		= req.query.begin_date;
 	var end_date 		= req.query.end_date;
+
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - contract_get_number: " + submitter);
 
 	var tableName = 'contract_number';
 	var contract_sum = 0;
@@ -322,6 +337,8 @@ app.get('/contract_get_number', function (req, res) {
 
 app.get('/getContractListByName', function (req, res) {
 	var username = req.query.username;
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - getContractListByName:" + username);
 	if (username == 'all') {
 		selectSQL = 'select * from contract_number order by id desc';
 	} else {
@@ -330,19 +347,19 @@ app.get('/getContractListByName', function (req, res) {
    
 	conn.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
-		console.log("SELECT ==> ");
 		res.send(rows);
 	});
 })
 
 app.get('/getAllContact', function (req, res) {
-  selectSQL = 'select * from user';
-   
-  conn.query(selectSQL, function (err, rows) {
-    if (err) console.log(err);
-    console.log("getAllContact ==> ");
-    res.send(rows);
-  });
+	var myDate = new Date();
+    console.log(myDate.toLocaleString() + " - getAllContact");
+
+ 	selectSQL = 'select * from user';
+ 	conn.query(selectSQL, function (err, rows) {
+		if (err) console.log(err);
+		res.send(rows);
+ 	});
 })
 
 app.get('/test', function (req, res) {
