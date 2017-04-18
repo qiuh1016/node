@@ -1,3 +1,1 @@
-cd Desktop
-cd node
-supervisor server.js
+supervisor D:\qh\node\server.js
