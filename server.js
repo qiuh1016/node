@@ -226,7 +226,6 @@ app.get('/getReportsByName', function (req, res) {
    
 	conn.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
-		console.log("getReportsByName ==> ");
 		res.send(rows);
 	});
 })
@@ -237,6 +236,8 @@ app.get('/getReportsByNameForLoadMore', function (req, res) {
 	var lastDataID = req.query.lastDataID;
 	var limit = req.query.limit;
 	var username = req.query.username;
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - getReportsByNameForLoadMore: " + username);
 	if (username == 'all') {
 		selectSQL = 'select * from week_reports WHERE id < '+lastDataID+' ORDER BY id DESC LIMIT ' + limit;
 	} else {
@@ -245,11 +246,11 @@ app.get('/getReportsByNameForLoadMore', function (req, res) {
    
 	conn.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
-		console.log("getReportsByNameForLoadMore ==> ");
 		res.send(rows);
 	});
 })
 
+//暂时没用到这个功能
 app.get('/getReportsByID', function (req, res) {
 	var databaseID = req.query.databaseID;
 	selectSQL = 'select * from week_reports WHERE id = "'+ databaseID +'"';
@@ -296,7 +297,6 @@ app.get('/getProjectByName', function (req, res) {
 })
 
 app.get('/contract_get_number', function (req, res) {
-	console.log("contract_get_number GET 请求");
 
 	var submitter 		= req.query.submitter;
 	var contract_number;
@@ -405,7 +405,8 @@ app.get('/getFileList', function (req, res) {
 })
 
 app.get('/test', function (req, res) {
-	console.log("test GET 请求");
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - test");
 	var username = req.query.submitter;
 	if (username == "123") {
 		res.send('{"success" : true}');
