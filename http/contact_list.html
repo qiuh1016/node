@@ -94,24 +94,25 @@
 		var contactInfo;
 		if (dataJson[i]['phone_2'] == null) {
 			contactInfo =
-				'部门：'		+ dataJson[i]['department']		+ '\n' +
-				'电话：'		+ dataJson[i]['phone_1']			+ '\n';
+				'部门：'		+ dataJson[i]['department']	+ '\n' +
+				'电话：'		+ dataJson[i]['phone_1']		+ '\n';
 		} else {
 			contactInfo =
-				'部门：'		+ dataJson[i]['department']		+ '\n' +
-				'电话1：'	+ dataJson[i]['phone_1']			+ '\n' +
-				'电话2：'	+ dataJson[i]['phone_2']			+ '\n';
+				'部门：'		+ dataJson[i]['department']	+ '\n' +
+				'电话1：'	+ dataJson[i]['phone_1']		+ '\n' +
+				'电话2：'	+ dataJson[i]['phone_2']		+ '\n';
 		}
 		contactInfo += 
-				'籍贯：' 	+ dataJson[i]['birth_place'] 	+ '\n' +
-				'生日：' 	+ dataJson[i]['birthday'] 		+ '\n' +
-				'入职时间：' 	+ dataJson[i]['hire_date'] 		+ '\n' +
-				'学历：' 	+ dataJson[i]['education'] 		+ '\n' +
+				'籍贯：' 	+ dataJson[i]['birth_place'] + '\n' +
+				'生日：' 	+ dataJson[i]['birthday'] 	+ '\n' +
+				'入职时间：' 	+ dataJson[i]['hire_date'] 	+ '\n' +
+				'学历：' 	+ dataJson[i]['education'] 	+ '\n' +
 				'职称：' 	+ dataJson[i]['rank'] 		+ '\n' +
 				'学校：' 	+ dataJson[i]['school'] 		+ '\n' +
 				'专业：' 	+ dataJson[i]['major'];
 		
 		mui.alert(contactInfo,dataJson[i]['username'],'好的',null,'div');
+		
 	}
 
 </script>

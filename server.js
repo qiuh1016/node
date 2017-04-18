@@ -393,6 +393,17 @@ app.get('/getAllContact', function (req, res) {
  	});
 })
 
+app.get('/getFileList', function (req, res) {
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - getFileList");
+	selectSQL = 'select * from file_list order by id desc';
+   
+	conn.query(selectSQL, function (err, rows) {
+		if (err) console.log(err);
+		res.send(rows);
+	});
+})
+
 app.get('/test', function (req, res) {
 	console.log("test GET 请求");
 	var username = req.query.submitter;
