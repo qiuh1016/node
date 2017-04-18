@@ -18,7 +18,7 @@
 				    <input id="searchInput" type="search" class="mui-input-clear" placeholder="" style="font-size: 14px;">
 				</div>
 				<!--卡片格式的列表-->
-				<div class="mui-card" style="margin-bottom: 35px;margin-top: 0px;">
+				<div class="mui-card" style="margin-bottom: 0px;margin-top: 0px;">
 					<!--数据列表-->
 					<ul class="mui-table-view mui-table-view-chevron" id="#ul_id"></ul>
 				</div>
@@ -33,10 +33,10 @@
 					down: {
 						callback: pulldownRefresh
 					},
-//					up: {
-//						contentrefresh: '正在加载...',
-//						callback: pullupRefresh
-//					}
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
 				}
 			});
 			
@@ -67,7 +67,7 @@
 				localStorage.completed = dataJson[i]['completed'];
 				localStorage.issures = dataJson[i]['issures'];
 				localStorage.plan = dataJson[i]['plan'];
-				  
+				
 				mui.openWindow({  
 					url: "report_detail.html"  
 				})  
@@ -99,15 +99,18 @@
 				}
 			}
 			
+			
+			var lastDataID;
+			var showReportNumber = 10;
 			/**
 			 * 下拉刷新具体业务实现
 			 */
 			function pulldownRefresh() {
+				
 				mui('#searchInput')[0].value = '';
 				var table = document.body.querySelector('.mui-table-view');
 				var cells = document.body.querySelectorAll('.mui-table-view-cell');
-				var showReportNumber = 30;
-				var totalReportNumber = 0;
+
 				var username = localStorage.username;
 				if (localStorage.permission <= 1) {
 					username = 'all';
@@ -117,11 +120,14 @@
 				setTimeout(function() {
 					mui.getJSON(_url, {limit: showReportNumber, username: username}, function(data) {
 							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+							mui('#pullrefresh').pullRefresh().refresh(true);
 							//获得服务器响应
+							lastDataID = data[data.length - 1]['id'];
+							
 							dataJson = data;
-							totalReportNumber = data.length;
 							table.innerHTML = "";
-							for (var i = 0; i < totalReportNumber; i++) {
+							for (var i = 0; i < data.length; i++) {
+								var databaseID = data[i]['id'];
 								var project = data[i]['project'];
 								var submitter = data[i]['submitter'];
 								var add_time = makeDate(data[i]['add_time']);
@@ -133,55 +139,51 @@
 								table.appendChild(li)
 							}
 							
-							if	(totalReportNumber >= showReportNumber) {
-								mui.toast('已显示最近提交的'+ showReportNumber+'条周报');
-							} else {
-								mui.toast('已显示全部'+ totalReportNumber+'条周报');
-							}
+//							if	(totalReportNumber >= showReportNumber) {
+//								mui.toast('已显示最近提交的'+ showReportNumber+'条周报');
+//							} else {
+//								mui.toast('已显示全部'+ totalReportNumber+'条周报');
+//							}
 						}
 					);
 				},200);
 			}
 			
-			//上拉加载具体业务实现  目前未实现
+			//上拉加载具体业务实现
 			var count = 0;
 			function pullupRefresh() {
 				
 				var table = document.body.querySelector('.mui-table-view');
 				var cells = document.body.querySelectorAll('.mui-table-view-cell');
-				var showReportNumber = 30;
-				var totalReportNumber = 0;
 				
 				var username = localStorage.username;
 				if (localStorage.permission <= 1) {
 					username = 'all';
 				}
 	
-				var _url = '/getReportsByName';
+				var _url = '/getReportsByNameForLoadMore';
 				
-				mui.getJSON(_url, {limit: showReportNumber, username: username}, function(data) {
-						mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); 
+				mui.getJSON(_url, {lastDataID: lastDataID, limit: showReportNumber, username: username}, function(data) {
+						count++;
+						//没有数据则停止上拉加载
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh(data.length == 0); 
+						lastDataID = data[data.length - 1]['id'];
 						//获得服务器响应
-						dataJson = data;
-						totalReportNumber = data.length;
 						
-						for (var i = 0; i < totalReportNumber; i++) {
+						for (var i = 0; i < data.length; i++) {
+							dataJson.push(data[i]);
+							var aID = count * showReportNumber + i;
+							var databaseID = data[i]['id'];
+							var project = data[i]['project'];
+							var submitter = data[i]['submitter'];
+							var add_time = makeDate(data[i]['add_time']);
+							
 							var li = document.createElement('li');
 							li.className = 'mui-table-view-cell';
-							li.innerHTML = '<a class="mui-navigate-right" style="font-size: 13px; color: #555555;" onclick="showDetail('+ i +')"> ' + 
-							data[i]['submitter'] + ' - ' + data[i]['project'] + ' - ' + makeDate(data[i]['add_time']) +
-							'</a>';
-							//查入新数据 如何判断新数据
-							table.insertBefore(li, table.firstChild);
-
+							li.innerHTML = '<a class="mui-navigate-right" style="font-size: 13px; color: #555555;" id="a' + aID + '"> ' + 
+								submitter + ' - ' + project + ' - ' + add_time + '</a>';
+							table.appendChild(li)
 						}
-						
-						if	(totalReportNumber >= showReportNumber) {
-							mui.toast('已显示最近提交的'+ showReportNumber+'条周报');
-						} else {
-							mui.toast('已显示全部'+ totalReportNumber+'条周报');
-						}
-						
 						
 					}
 				);

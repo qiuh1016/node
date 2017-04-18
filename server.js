@@ -213,7 +213,37 @@ app.get('/getReportsByName', function (req, res) {
    
 	conn.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
-		console.log("SELECT ==> ");
+		console.log("getReportsByName ==> ");
+		res.send(rows);
+	});
+})
+
+
+//上拉加载功能
+app.get('/getReportsByNameForLoadMore', function (req, res) {
+	var lastDataID = req.query.lastDataID;
+	var limit = req.query.limit;
+	var username = req.query.username;
+	if (username == 'all') {
+		selectSQL = 'select * from week_reports WHERE id < '+lastDataID+' ORDER BY id DESC LIMIT ' + limit;
+	} else {
+		selectSQL = 'select * from week_reports WHERE submitter = "'+ username +'" AND id < '+lastDataID+' ORDER BY id DESC LIMIT ' + limit;
+	}
+   
+	conn.query(selectSQL, function (err, rows) {
+		if (err) console.log(err);
+		console.log("getReportsByNameForLoadMore ==> ");
+		res.send(rows);
+	});
+})
+
+app.get('/getReportsByID', function (req, res) {
+	var databaseID = req.query.databaseID;
+	selectSQL = 'select * from week_reports WHERE id = "'+ databaseID +'"';
+   
+	conn.query(selectSQL, function (err, rows) {
+		if (err) console.log(err);
+		console.log("getReportsByID ==> ");
 		res.send(rows);
 	});
 })
