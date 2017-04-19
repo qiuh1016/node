@@ -110,10 +110,11 @@
 				var cells = document.body.querySelectorAll('.mui-table-view-cell');
 				var showReportNumber = 30;
 				var totalReportNumber = 0;
-				var username = localStorage.username;
-				if (localStorage.permission <= 1) {
-					username = 'all';
-				}
+//				var username = localStorage.username;
+//				if (localStorage.permission <= 1) {
+//					username = 'all';
+//				}
+				var username = 'all';
 				var _url = '/getContractListByName';
 				
 				setTimeout(function() {
@@ -137,7 +138,7 @@
 							
 						}
 					);
-				},200);
+				},10);
 			}
 			
 			//上拉加载具体业务实现  目前未实现
@@ -149,10 +150,11 @@
 				var showReportNumber = 30;
 				var totalReportNumber = 0;
 				
-				var username = localStorage.username;
-				if (localStorage.permission <= 1) {
-					username = 'all';
-				}
+//				var username = localStorage.username;
+//				if (localStorage.permission <= 1) {
+//					username = 'all';
+//				}
+				var username = 'all'; 	
 	
 				var _url = '/getReportsByName';
 				

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	
+	<header class="mui-bar mui-bar-nav">
+		<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
+		<button class="mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav"></span>
+			首页
+		</button>
+	    <h1 class="mui-title">文件上传</h1>
+	    <!--<a class="mui-icon mui-icon-bars mui-pull-right" href="report_list_pullrefresh_main.html"></a>-->
+	</header>
+
+	<div class="mui-content">
+		<br>
+		<form method="post" enctype="multipart/form-data" action="/file_upload">
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*文号：</p>
+				<input type="text" id="file_number" name="file_number" class="mui-input-clear" style="font-size: 13px; color: #555555;"  placeholder="如201703">
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*标题：</p>
+				<input type="text" id="file_title" name="file_title" class="mui-input-clear" style="font-size: 13px; color: #555555;">
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*文件：</p>
+				<input type="file" name="file" class="mui-input-clear" style="font-size: 13px; color: #555555;" >
+			</div>
+			
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="submit" class="mui-btn mui-btn-primary mui-btn-block">上传</input>
+			</div>
+
+			<!--<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="fileUpload()">上传</button>
+			</div>-->
+			<br>
+			
+		</form>
+	
+	</div>
+
+</body>
+<script type="text/javascript" charset="utf-8">
+
+	window.onload = function() {
+		if (localStorage.permission != 0) {
+			mui.alert('您没有提交文件的权限','提示','好的',function (e) {
+			   mui.back();
+			},'div')
+		}
+	}
+
+	function fileUpload() {
+		var file_number = document.getElementById('file_number').value;
+		var file_title = document.getElementById('file_title').value;
+		
+		if (file_number == "" || file_title == "") {
+			mui.toast('有信息为空');
+			return;
+		}
+		
+		var _url = '/project_plan_submit';
+		mui.getJSON(_url, {project:project, month: month, plan: plan}, function(data) {
+				//获得服务器响应
+				if (data['success']) {
+					mui.toast('提交成功');
+				} else{
+					mui.toast('提交失败');
+				}
+			}
+		);
+	}
+
+</script>
+</html>

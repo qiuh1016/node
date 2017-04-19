@@ -1,6 +1,15 @@
 var express = require('express');
+var fs = require('fs');
+var bodyParser = require('body-parser');
+var multer  = require('multer');
 var app = express();
 app.use(express.static('http'));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ dest: '/tmp/'}).array('file'));
+
+// 创建 application/x-www-form-urlencoded 编码解析 
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 //db
 var mysql = require('mysql');
@@ -395,13 +404,70 @@ app.get('/getAllContact', function (req, res) {
 app.get('/getFileList', function (req, res) {
 	var myDate = new Date();
 	console.log(myDate.toLocaleString() + " - getFileList");
-	selectSQL = 'select * from file_list order by id desc';
+	selectSQL = 'select * from file_list order by file_number desc';
    
 	conn.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
 		res.send(rows);
 	});
 })
+
+
+app.post('/file_upload', urlencodedParser, function (req, res) {
+
+	var file_number = req.body.file_number;
+	var file_title = req.body.file_title;
+
+	console.log(req.body.file_number);
+	console.log(req.files[0]);  // 上传的文件信息
+ 
+	var des_file = __dirname + "/http/pdf/" + req.files[0].originalname;
+	fs.readFile(req.files[0].path, function (err, data) {
+		fs.writeFile(des_file, data, function (err) {
+
+			if( err ){
+				console.log( err );
+			} else {
+
+				var file_name = req.files[0].originalname.replace('.pdf', '');
+				response = {
+					success: true,
+					message: 'File uploaded successfully', 
+					filename: file_name
+				};
+
+				//insert db
+				insertSQL = 'INSERT INTO file_list SET ';
+				insertSQL = insertSQL + 'file_number = "'	+ file_number	+ '",';
+				insertSQL = insertSQL + 'file_name = "'		+ file_name		+ '",';
+				insertSQL = insertSQL + 'file_title = "'	+ file_title	+ '";';
+				conn.query(insertSQL, function (err, res1) {
+					if (err) {
+						console.log(err);
+						res.send('{"success" : false}');
+					} else {
+						res.send( JSON.stringify( response ) );
+						console.log( response );
+			    	}
+				});
+				
+			}
+
+			//删除临时文件
+			fs.unlink(req.files[0].path, function(err) {
+				console.log('删除上传临时文件');
+			})
+			
+		});
+	});
+
+
+
+
+
+})
+
+
 
 app.get('/project_plan_submit', function (req, res) {
 

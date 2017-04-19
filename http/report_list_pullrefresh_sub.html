@@ -42,9 +42,7 @@
 			
 			if (mui.os.plus) {
 				mui.plusReady(function() {
-					setTimeout(function() {
-						mui('#pullrefresh').pullRefresh().pulldownLoading();
-					}, 500);
+					mui('#pullrefresh').pullRefresh().pulldownLoading();
 				});
 			} else {
 				mui.ready(function() {
@@ -138,15 +136,9 @@
 									submitter + ' - ' + project + ' - ' + add_time + '</a>';
 								table.appendChild(li)
 							}
-							
-//							if	(totalReportNumber >= showReportNumber) {
-//								mui.toast('已显示最近提交的'+ showReportNumber+'条周报');
-//							} else {
-//								mui.toast('已显示全部'+ totalReportNumber+'条周报');
-//							}
 						}
 					);
-				},200);
+				},10);
 			}
 			
 			//上拉加载具体业务实现
