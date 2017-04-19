@@ -33,7 +33,6 @@ app.get('/index', function (req, res) {
 })
 
 app.get('/report_submit', function (req, res) {
-	console.log("report_submit GET 请求");
 	var project = req.query.project;
 	var submitter = req.query.submitter;
 	var importance = req.query.importance;
@@ -398,6 +397,48 @@ app.get('/getFileList', function (req, res) {
 	console.log(myDate.toLocaleString() + " - getFileList");
 	selectSQL = 'select * from file_list order by id desc';
    
+	conn.query(selectSQL, function (err, rows) {
+		if (err) console.log(err);
+		res.send(rows);
+	});
+})
+
+app.get('/project_plan_submit', function (req, res) {
+
+	var project = req.query.project;
+	var plan = req.query.plan;
+	var month = req.query.month;
+
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - project_plan_submit: ");
+
+	if (project == "" || plan == "" || month == "") {
+		res.send('项目代号和提交者不能为空！'); 
+	} else {
+		insertSQL = 'INSERT INTO project_plan SET ';
+		insertSQL = insertSQL + 'project = "'+project+'",';
+		insertSQL = insertSQL + 'plan = "'+plan+'",';
+		insertSQL = insertSQL + 'month = "'+month+'";';
+		conn.query(insertSQL, function (err, res1) {
+			if (err) {
+				console.log(err);
+				res.send('{"success" : false}');
+			} else {
+				res.send('{"success" : true}');
+        	}
+    	});
+  	}
+})
+
+app.get('/project_plan_get', function (req, res) {
+
+	var project = req.query.project;
+	var month = req.query.month;
+
+	var myDate = new Date();
+	console.log(myDate.toLocaleString() + " - project_plan_get: ");
+
+	selectSQL = 'SELECT * FROM project_plan WHERE project = "'+project+'" AND `month` = "'+month+'"';
 	conn.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
 		res.send(rows);

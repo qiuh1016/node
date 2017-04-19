@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	
+	<header class="mui-bar mui-bar-nav">
+		<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
+		<button class="mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav"></span>
+			首页
+		</button>
+	    <h1 class="mui-title">计划查看</h1>
+	    <!--<a class="mui-icon mui-icon-bars mui-pull-right" href="report_list_pullrefresh_main.html"></a>-->
+	</header>
+
+	<div class="mui-content">
+		<br>
+		<form>
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*项目代号：</p>
+				<input type="text" id="project" name="project" class="mui-input-clear" style="font-size: 13px; color: #555555;" placeholder="如2017DK01、DK008……">
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*月份：</p>
+				<input type="text" id="month" name="month" class="mui-input-clear" style="font-size: 13px; color: #555555;" placeholder="如2017-4、2017-11……">
+			</div>
+
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="getPlan()">获取计划</button>
+			</div>
+			
+			<div class="mui-button-row" style="margin: 10px 10px 10px 10px;">
+				<textarea id="detail" readonly="readonly" style="height: 300px; font-size: 13px; color: #555555;"></textarea>
+			</div>
+			
+			
+		</form>
+	
+	</div>
+
+</body>
+<script type="text/javascript" charset="utf-8">
+
+	window.onload = function() {
+		var myDate = new Date();
+		var currentMonth = myDate.getMonth() + 1;
+		mui('#month')[0].value = myDate.getFullYear() + '-' + currentMonth;
+	}
+
+	function getPlan() {
+		var project = document.getElementById('project').value;
+		var month = document.getElementById('month').value;
+		
+		if (project == "" || month == "") {
+			mui.toast('有信息为空');
+			return;
+		}
+		
+		var _url = '/project_plan_get';
+		mui.getJSON(_url, {project:project, month: month}, function(data) {
+				//获得服务器响应
+				if (data.length == 0) {
+					mui.toast('无内容');
+					return;
+				}
+				
+				var plan = '';
+				for (var i = 0 in data) {
+					var index = parseInt(i) + 1;
+					plan += index + '. ' + data[i]['plan'] + '\n';	
+				}
+				mui('#detail')[0].value = plan;
+				
+			}
+		);
+	}
+
+</script>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	
+	<header class="mui-bar mui-bar-nav">
+		<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
+		<button class="mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav"></span>
+			首页
+		</button>
+	    <h1 class="mui-title">计划提交</h1>
+	    <!--<a class="mui-icon mui-icon-bars mui-pull-right" href="report_list_pullrefresh_main.html"></a>-->
+	</header>
+
+	<div class="mui-content">
+		<br>
+		<form>
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*项目代号：</p>
+				<input type="text" id="project" name="project" class="mui-input-clear" style="font-size: 13px; color: #555555;"  placeholder="如2017DK01、DK008……">
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*月份：</p>
+				<input type="text" id="month" name="month" class="mui-input-clear" style="font-size: 13px; color: #555555;" placeholder="如2017-4、2017-11……">
+			</div>
+			
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>*计划：</p>
+				<input type="text" id="plan" name="plan" class="mui-input-clear" style="font-size: 13px; color: #555555;" >
+			</div>
+
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="submitPlan()">提交</button>
+			</div>
+			<br>
+			
+		</form>
+	
+	</div>
+
+</body>
+<script type="text/javascript" charset="utf-8">
+
+	window.onload = function() {
+		if (localStorage.permission != 0) {
+			mui.alert('您没有提交计划的权限','提示','好的',function (e) {
+			   mui.back();
+			},'div')
+		}
+		
+		var myDate = new Date();
+		var currentMonth = myDate.getMonth() + 1;
+		mui('#month')[0].value = myDate.getFullYear() + '-' + currentMonth;
+	}
+
+	function submitPlan() {
+		var project = document.getElementById('project').value.toUpperCase( );
+		var month = document.getElementById('month').value;
+		var plan = document.getElementById('plan').value;
+		
+		if (project == "" || month == "" || plan == "") {
+			mui.toast('有信息为空');
+			return;
+		}
+		
+		var _url = '/project_plan_submit';
+		mui.getJSON(_url, {project:project, month: month, plan: plan}, function(data) {
+				//获得服务器响应
+				if (data['success']) {
+					mui.toast('提交成功');
+					document.getElementById('plan').value = '';
+				} else{
+					mui.toast('提交失败');
+				}
+			}
+		);
+	}
+
+</script>
+</html>
