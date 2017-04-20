@@ -9,6 +9,12 @@
     <script type="text/javascript" charset="utf-8">
       	mui.init();
     </script>
+    <style>
+    		.mui-table-view-cell {
+    			font-size: 13px;
+    			color: #555555;
+    		}
+    </style>
 </head>
 <body>
 	
@@ -39,13 +45,10 @@
 				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="getPlan()">获取计划</button>
 			</div>
 			
-			<div class="mui-button-row" style="margin: 10px 10px 10px 10px;">
-				<textarea id="detail" readonly="readonly" style="height: 200px; font-size: 13px; color: #555555;"></textarea>
-			</div>
-			
+			<ul class="mui-table-view" id="ul" style="margin-top: 20px;"> </ul>
 			
 		</form>
-	
+
 	</div>
 
 </body>
@@ -63,6 +66,12 @@
 	}			
 	
 	function getPlan() {
+		
+//		mui.openWindow({
+//			url: 'plan_detail.html'
+//		})
+//		return;
+		
 		var project = document.getElementById('project').value;
 		var month = document.getElementById('month').value;
 		
@@ -74,16 +83,18 @@
 		var _url = '/project_plan_get';
 		mui.getJSON(_url, {project:project, month: month}, function(data) {
 				//获得服务器响应
-				var plan = '';
+				mui('#ul')[0].innerHTML = '';
 				if (data.length == 0) {
 					mui.toast('无内容');
 				}
 				
 				for (var i = 0 in data) {
 					var index = parseInt(i) + 1;
-					plan += index + '. ' + data[i]['plan'] + '\n';	
+					mui('#ul')[0].innerHTML +=
+						'<li class="mui-table-view-cell">' + index + '. ' + data[i]['plan'] +
+						'<span class="mui-badge mui-badge-success">' + data[i]['weight'] + '</span>' + 
+						'</li>';	
 				}
-				mui('#detail')[0].value = plan;
 				
 			}
 		);

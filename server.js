@@ -295,8 +295,7 @@ app.get('/project_name_get', function (req, res) {
 			res.send(rows);
 		});
 	} else {
-		//TODO: 2个项目经理的情况
-		selectSQL = 'select * from project WHERE manager = "'+ username +'" WHERE finished = 0';
+		selectSQL = 'SELECT * from project WHERE finished = 0 and (manager = "'+ username +'" OR manager_2 = "'+ username +'")';
 		db.query(selectSQL, function (err, rows) {
 			if (err) console.log(err);
 			res.send(rows);

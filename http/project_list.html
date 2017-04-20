@@ -55,7 +55,11 @@
 		
 		list.innerHTML = "";
 		var _url = '/project_name_get';
-		mui.getJSON(_url, {username: 'all'}, function(data) {
+		var username = localStorage.username;
+		if (localStorage.permission <= 1) {
+			username = 'all';
+		}
+		mui.getJSON(_url, {username: username}, function(data) {
 				//获得服务器响应
 				dataJson = data;
 				for (var i in data) {
