@@ -19,25 +19,25 @@
 			首页
 		</button>
 	    <h1 class="mui-title">计划提交</h1>
-	    <!--<a class="mui-icon mui-icon-bars mui-pull-right" href="report_list_pullrefresh_main.html"></a>-->
+	    <a class="mui-icon mui-icon-bars mui-pull-right" href="project_list.html"></a>
 	</header>
 
 	<div class="mui-content">
 		<br>
 		<form>
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
-				<p>*项目代号：</p>
+				<p>项目代号：</p>
 				<input type="text" id="project" name="project" class="mui-input-clear" style="font-size: 13px; color: #555555;"  placeholder="如2017DK01、DK008……">
 			</div>
 			
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
-				<p>*月份：</p>
+				<p>月份：</p>
 				<input type="text" id="month" name="month" class="mui-input-clear" style="font-size: 13px; color: #555555;" placeholder="如2017-4、2017-11……">
 			</div>
 			
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
-				<p>*计划：</p>
-				<input type="text" id="plan" name="plan" class="mui-input-clear" style="font-size: 13px; color: #555555;" >
+				<p>计划：</p>
+				<input type="text" id="plan" name="plan" class="mui-input-clear" style="font-size: 13px; color: #555555;" placeholder="如当月有多条计划，请逐条依次提交" >
 			</div>
 
 			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
@@ -62,6 +62,11 @@
 		var myDate = new Date();
 		var currentMonth = myDate.getMonth() + 1;
 		mui('#month')[0].value = myDate.getFullYear() + '-' + currentMonth;
+		
+		if (localStorage.project != null) {
+			mui('#project')[0].value = localStorage.project;
+			localStorage.removeItem('project');
+		}
 	}
 
 	function submitPlan() {

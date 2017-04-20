@@ -59,6 +59,8 @@
 			mui.toast('用户名或密码不能为空');
 			return;
 		}
+		console.log(b64_md5(pwd));
+//		return;
 		
 		var _url = '/login';
 		mui.getJSON(_url, {username: username, pwd: pwd}, function(data) {
@@ -88,4 +90,5 @@
 		);
 	}
 </script>
+<script type="text/javascript" src="js/md5.js" ></script>
 </html>

@@ -13,14 +13,14 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 //db
 var mysql = require('mysql');
-var conn = mysql.createConnection({
+var db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'root',
     database:'nodejs',
     port: 3306
 });
-conn.connect();
+db.connect();
 
 var selectSQL = 'select * from t_user limit 10';
 var insertSQL = 'insert into t_user(name) values("conan"),("fens.me")';
@@ -40,6 +40,8 @@ app.get('/index', function (req, res) {
 	console.log("主页 GET 请求");
 	res.sendFile(__dirname + '/http/index.html');
 })
+
+var report = require('./report.js');
 
 app.get('/report_submit', function (req, res) {
 	var project = req.query.project;
@@ -62,7 +64,7 @@ app.get('/report_submit', function (req, res) {
 		insertSQL = insertSQL + 'completed = "'+completed+'",';
 		insertSQL = insertSQL + 'issures = "'+issures+'",';
 		insertSQL = insertSQL + 'plan = "'+plan+'";';
-		conn.query(insertSQL, function (err, res1) {
+		db.query(insertSQL, function (err, res1) {
 			if (err) {
 				console.log(err);
 				res.send('{"success" : false}');
@@ -96,7 +98,7 @@ app.get('/report_update', function (req, res) {
 		insertSQL = insertSQL + 'completed = "'+completed+'",';
 		insertSQL = insertSQL + 'issures = "'+issures+'",';
 		insertSQL = insertSQL + 'plan = "'+plan+'" where id = ' + id +';';
-		conn.query(insertSQL, function (err, res1) {
+		db.query(insertSQL, function (err, res1) {
 			if (err) {
 				console.log(err);
 				res.send('{"success" : false}');
@@ -120,7 +122,7 @@ app.get('/report_update', function (req, res) {
 
 //    if (name != null) {
 //     insertSQL = 'insert into t_user(name) values("' + name +'")';
-//     conn.query(insertSQL, function (err, res1) {
+//     db.query(insertSQL, function (err, res1) {
 //         if (err) {
 //           console.log(err);
 //           res.send('{"success" : false, "result": ' + err + '}');
@@ -141,7 +143,7 @@ app.get('/report_delete', function (req, res) {
 		return;
 	} else {
 		var SQL = 'delete from week_reports where id= "' + id +'"';
-		conn.query(SQL, function (err, res1) {
+		db.query(SQL, function (err, res1) {
 			if (err) {
 				console.log(err);
 				res.send('{"success" : false}');
@@ -162,7 +164,7 @@ app.get('/login', function (req, res) {
 	console.log(myDate.toLocaleString() + " - login: " + username);
 
 	var selectSQL = 'select * from user where username = "' + username + '"';
-	conn.query(selectSQL, function (err, rows) {
+	db.query(selectSQL, function (err, rows) {
 		if (err) {
 			console.log(err);
 			res.send('{"success" : false, "result": "datebase error"}');
@@ -196,7 +198,7 @@ app.get('/change_pwd', function (req, res) {
     selectSQL = 'select * from user where username = "' + username + '"';
     var updateSQL = 'UPDATE user SET password = "' + newPwd +'" where username = "' + username + '"';
     //查询用户名 和 密码
-    conn.query(selectSQL, function (err, rows) {
+    db.query(selectSQL, function (err, rows) {
         if (err) {
           console.log(err);
           console.log(rows);
@@ -204,7 +206,7 @@ app.get('/change_pwd', function (req, res) {
         } else {
         	if (oldPwd == rows[0]['password']) {
         		//原密码正确 修改密码
-        		conn.query(updateSQL, function (err, rows1) {
+        		db.query(updateSQL, function (err, rows1) {
 			        if (err) {
 			          	console.log(err);
 			          	res.send('{"success" : false, "result": "datebase error"}');
@@ -232,7 +234,7 @@ app.get('/getReportsByName', function (req, res) {
 		selectSQL = 'select * from week_reports WHERE submitter = "'+ username +'" ORDER BY id DESC LIMIT ' + limit;
 	}
    
-	conn.query(selectSQL, function (err, rows) {
+	db.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
 		res.send(rows);
 	});
@@ -252,7 +254,7 @@ app.get('/getReportsByNameForLoadMore', function (req, res) {
 		selectSQL = 'select * from week_reports WHERE submitter = "'+ username +'" AND id < '+lastDataID+' ORDER BY id DESC LIMIT ' + limit;
 	}
    
-	conn.query(selectSQL, function (err, rows) {
+	db.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
 		res.send(rows);
 	});
@@ -263,7 +265,7 @@ app.get('/getReportsByID', function (req, res) {
 	var databaseID = req.query.databaseID;
 	selectSQL = 'select * from week_reports WHERE id = "'+ databaseID +'"';
    
-	conn.query(selectSQL, function (err, rows) {
+	db.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
 		console.log("getReportsByID ==> ");
 		res.send(rows);
@@ -274,7 +276,7 @@ app.get('/getReportsByID', function (req, res) {
 //   var num = req.query.num;
 //   selectSQL = 'select * from week_reports ORDER BY "add_time" DESC LIMIT ' + num; //where `No.` = ' + id;
    
-//   conn.query(selectSQL, function (err, rows) {
+//   db.query(selectSQL, function (err, rows) {
 //       if (err) console.log(err);
 //       console.log("getLast ==> ");
 //       console.log(rows);
@@ -284,19 +286,18 @@ app.get('/getReportsByID', function (req, res) {
 // })
 
 
-//暂时没用到这个功能
-app.get('/getProjectByName', function (req, res) {
+app.get('/project_name_get', function (req, res) {
 	var username = req.query.username;
 	if (username == 'all') {
-		selectSQL = 'select * from project';
-		conn.query(selectSQL, function (err, rows) {
+		selectSQL = 'select * from project WHERE finished = 0';
+		db.query(selectSQL, function (err, rows) {
 			if (err) console.log(err);
 			res.send(rows);
 		});
 	} else {
 		//TODO: 2个项目经理的情况
-		selectSQL = 'select * from project WHERE manager = "'+ username +'"';
-		conn.query(selectSQL, function (err, rows) {
+		selectSQL = 'select * from project WHERE manager = "'+ username +'" WHERE finished = 0';
+		db.query(selectSQL, function (err, rows) {
 			if (err) console.log(err);
 			res.send(rows);
 		});
@@ -327,7 +328,7 @@ app.get('/contract_get_number', function (req, res) {
 	var year = date.getFullYear();
 
 	//先查询合同数
-	conn.query('select count(*) from ' + tableName + ' where year = "' + year + '" AND ForS = "'+ ForS +'"', function (err, res1) {
+	db.query('select count(*) from ' + tableName + ' where year = "' + year + '" AND ForS = "'+ ForS +'"', function (err, res1) {
 		if (err) {
 			console.log(err);
 			res.send('{"success" : false}');
@@ -361,7 +362,7 @@ app.get('/contract_get_number', function (req, res) {
 			insertSQL = insertSQL + 'year = "'				+ year 				+ '",';
 			insertSQL = insertSQL + 'ForS = "'				+ ForS 				+ '";';
 
-			conn.query(insertSQL, function (err, res1) {
+			db.query(insertSQL, function (err, res1) {
 				if (err) {
 					console.log(err);
 					res.send('{"success" : false}');
@@ -384,7 +385,7 @@ app.get('/getContractListByName', function (req, res) {
 		selectSQL = 'select * from contract_number WHERE submitter = "'+ username +'" ORDER BY id DESC';
 	}
    
-	conn.query(selectSQL, function (err, rows) {
+	db.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
 		res.send(rows);
 	});
@@ -395,7 +396,7 @@ app.get('/getAllContact', function (req, res) {
     console.log(myDate.toLocaleString() + " - getAllContact");
 
  	selectSQL = 'select * from user';
- 	conn.query(selectSQL, function (err, rows) {
+ 	db.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
 		res.send(rows);
  	});
@@ -406,7 +407,7 @@ app.get('/getFileList', function (req, res) {
 	console.log(myDate.toLocaleString() + " - getFileList");
 	selectSQL = 'select * from file_list order by file_number desc';
    
-	conn.query(selectSQL, function (err, rows) {
+	db.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
 		res.send(rows);
 	});
@@ -441,7 +442,7 @@ app.post('/file_upload', urlencodedParser, function (req, res) {
 				insertSQL = insertSQL + 'file_number = "'	+ file_number	+ '",';
 				insertSQL = insertSQL + 'file_name = "'		+ file_name		+ '",';
 				insertSQL = insertSQL + 'file_title = "'	+ file_title	+ '";';
-				conn.query(insertSQL, function (err, res1) {
+				db.query(insertSQL, function (err, res1) {
 					if (err) {
 						console.log(err);
 						res.send('{"success" : false}');
@@ -460,10 +461,6 @@ app.post('/file_upload', urlencodedParser, function (req, res) {
 			
 		});
 	});
-
-
-
-
 
 })
 
@@ -485,7 +482,7 @@ app.get('/project_plan_submit', function (req, res) {
 		insertSQL = insertSQL + 'project = "'+project+'",';
 		insertSQL = insertSQL + 'plan = "'+plan+'",';
 		insertSQL = insertSQL + 'month = "'+month+'";';
-		conn.query(insertSQL, function (err, res1) {
+		db.query(insertSQL, function (err, res1) {
 			if (err) {
 				console.log(err);
 				res.send('{"success" : false}');
@@ -505,7 +502,7 @@ app.get('/project_plan_get', function (req, res) {
 	console.log(myDate.toLocaleString() + " - project_plan_get: ");
 
 	selectSQL = 'SELECT * FROM project_plan WHERE project = "'+project+'" AND `month` = "'+month+'"';
-	conn.query(selectSQL, function (err, rows) {
+	db.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
 		res.send(rows);
 	});

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<!--<button class="mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav"></span>
+			首页
+		</button>-->
+	    <h1 class="mui-title">项目名称</h1>
+	</header>
+
+	<div class="mui-content">
+		<div class="mui-input-row mui-search" style="margin-top: 10px;margin-left: 10px;margin-right: 10px;">
+		    <input id="searchInput" type="search" class="mui-input-clear" placeholder="" style="font-size: 14px;">
+		</div>
+		<div class="mui-card" style="margin-bottom: 35px; margin-top: 0px;">
+			<ul class="mui-table-view" id="ul"></ul>
+		</div>
+	
+	</div>
+
+</body>
+<script type="text/javascript" charset="utf-8">
+
+	var dataJson;
+	
+	//点击事件
+//	mui('.mui-table-view').on('tap', '.mui-table-view-cell', function () {  
+//		var contactInfo = 
+//			'部门：'		+ dataJson[i]['department']		+ '\n' +
+//			'电话1：'	+ dataJson[i]['phone_1']		+ '\n' +
+//			'电话2：'	+ dataJson[i]['phone_2'];
+//		mui.alert(contactInfo,dataJson[i]['username'],'好的',null,'div')
+//	})  
+	
+	mui('#searchInput')[0].addEventListener('input',function() {
+		searchProject(this.value);
+	});
+	
+	var list = document.getElementById('ul');
+	
+	window.onload = function() {
+		
+		list.innerHTML = "";
+		var _url = '/project_name_get';
+		mui.getJSON(_url, {username: 'all'}, function(data) {
+				//获得服务器响应
+				dataJson = data;
+				for (var i in data) {
+					var project = data[i]['project'];
+					var project_name = data[i]['project_name'];
+					
+					list.innerHTML += 
+						"<li class='mui-table-view-cell' onclick='setProject("+ i +")'>" + 
+						"<a class='mui-navigate-right'>" +
+						project + "  -  " + project_name + 
+						"</a></li>";
+				}
+			}
+		);
+	}
+	
+	function searchProject(keyword) {
+		keyword = keyword.toUpperCase( );
+		list.innerHTML = '';
+		for (var i in dataJson) {
+			var project = dataJson[i]['project'];
+			var project_name = dataJson[i]['project_name'];
+			
+			if (project.indexOf(keyword) != -1 || project_name.indexOf(keyword) != -1) {
+				list.innerHTML += 
+				"<li class='mui-table-view-cell' onclick='setProject("+ i +")'>" + 
+				"<a class='mui-navigate-right'>" +
+				project + "  -  " + project_name + 
+				"</a></li>";
+			}
+			
+		}
+	}
+
+	function setProject(i) {
+		
+		localStorage.project = dataJson[i]['project'];
+		mui.back();
+		
+	}
+
+</script>
+</html>
