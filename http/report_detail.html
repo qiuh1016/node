@@ -75,6 +75,15 @@
 			"本周日常工作完成情况：\n" + localStorage.completed + "\n\n" +
 			"存在的问题：\n" + localStorage.issures + "\n\n" +
 			"下周重点工作计划：\n" + localStorage.plan;
+			
+		localStorage.removeItem('id');
+		localStorage.removeItem('project');
+		localStorage.removeItem('submitter');
+		localStorage.removeItem('add_time');
+		localStorage.removeItem('importance');
+		localStorage.removeItem('completed');
+		localStorage.removeItem('issures');
+		localStorage.removeItem('plan');
 	});
 	
 	window.onabort = function() {
