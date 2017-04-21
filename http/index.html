@@ -30,7 +30,7 @@
 				<div id="user" class="title">当前用户：</div>
 			</div>
 			
-			<ul class="mui-table-view mui-grid-view mui-grid-9">
+			<ul class="mui-table-view mui-grid-view mui-grid-9" id="ul">
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
 				    <a href="report_submit_original.html">
 				        <span class="mui-icon mui-icon-compose"></span>
@@ -98,6 +98,12 @@
 				    </a>
 				</li>
 				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
+				    <a href="db_download.html">
+				        <span class="mui-icon mui-icon-download"></span>
+				        <div class="mui-media-body">数据下载</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">
 				    <a href="change_password.html">
 				        <span class="mui-icon mui-icon-locked"></span>
 				        <div class="mui-media-body">修改密码</div>
@@ -124,6 +130,16 @@
 			} else {
 				mui('#user')[0].innerText = '当前用户：' + localStorage.username;
 			}
+			
+//			if (localStorage.permission <= 1) {
+//				mui('#ul')[0].innerText +=
+//					'<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4">' + 
+//				    '<a onclick="logout()">' +
+//				        '<span class="mui-icon mui-icon-undo"></span>' +
+//				        '<div class="mui-media-body">退出登陆</div>' +
+//				    '</a>' +
+//					'</li>';
+//			}
 		}
 		
 		function logout() {

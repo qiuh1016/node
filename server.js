@@ -1,7 +1,9 @@
 var express = require('express');
-var fs = require('fs');
 var bodyParser = require('body-parser');
 var multer  = require('multer');
+var xlsx = require('node-xlsx');
+var fs = require('fs');
+
 var app = express();
 app.use(express.static('http'));
 
@@ -504,6 +506,70 @@ app.get('/project_plan_get', function (req, res) {
 	db.query(selectSQL, function (err, rows) {
 		if (err) console.log(err);
 		res.send(rows);
+	});
+})
+
+app.get('/download_db_excel', function(req, res) {
+	selectSQL = req.query.sql;
+	db.query(selectSQL, function(err, rows) {
+
+		if (err) {
+			response = {
+				success: false,
+				err: err
+			}
+			res.send(JSON.stringify(response));
+		} else {
+			var data = [];
+
+			//表头
+			if (rows.length != 0) {
+				var keyArr = [];
+				for (var key in rows[0]) {
+					keyArr.push(key);
+				}
+				data.push(keyArr);
+			}
+
+			//json数组遍历
+			for (var i in rows) {
+				var arr = [];
+				var value = rows[i];
+				//json key 遍历
+				for (var key in value) {
+					arr.push(value[key]);
+				}
+				data.push(arr);
+			}
+			var buffer = xlsx.build([
+			    {
+			        name:'sheet1',
+			        data:data
+			    }        
+			]);
+
+			//将文件内容插入新的文件中
+			var fileName = new Date().getTime()+ '.xlsx';
+			fs.writeFile(__dirname +'/DB/excel/' + 'dbBuffer.xlsx',buffer,{'flag':'w'}, function(err) {
+				if (err) {
+					response = {
+						success: false,
+						err: err
+					}
+					res.send(JSON.stringify(response));
+				} else {
+					var filePath = __dirname + '/DB/excel/' + 'dbBuffer.xlsx';
+					console.log("下载 请求");
+					res.download(filePath,fileName);
+					// fs.unlink(filePath);
+				}
+				
+			});
+		}
+
+		
+
+		
 	});
 })
 
