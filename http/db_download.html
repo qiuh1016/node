@@ -24,12 +24,39 @@
 
 	<div class="mui-content">
 		<br>
-		<form action="/download_db_excel">
+		<!--sql-->
+		<form>
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
-				<p>SQL：</p>
+				<p>SQL语句：</p>
 				<input type="text" id="sql" name="sql" class="mui-input-clear" style="font-size: 13px; color: #555555;">
 			</div>
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="downloadExcel()">下载</button>
+			</div>
+			<br>
+		</form>
+		
+		<form>
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>下载制定日期之后的周报：</p>
+				<input type="text" id="date" name="date" class="mui-input-clear" style="font-size: 13px; color: #555555;" placeholder="格式： 2017-04-20">
+			</div>
 
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="downloadReprot()">下载周报</button>
+			</div>
+			
+		</form>
+		
+		<form action="/download_db_excel" style="visibility: hidden;" id="downloadForm">
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>fileName：</p>
+				<input type="text" id="fileName" name="fileName" class="mui-input-clear" style="font-size: 13px; color: #555555;">
+			</div>
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>filePath：</p>
+				<input type="text" id="filePath" name="filePath" class="mui-input-clear" style="font-size: 13px; color: #555555;">
+			</div>
 			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
 				<button type="submit" class="mui-btn mui-btn-primary mui-btn-block">下载</button>
 			</div>
@@ -49,25 +76,55 @@
 			},'div')
 		}
 	}
-
+	
 	function downloadExcel() {
 		var sql = document.getElementById('sql').value;
-
-		
-		if (sql == "") {
-			mui.toast('sql语句为空');
-			return;
-		}
-		
-		var _url = '/download_db_excel';
+		downloadFileBySQL(sql);
+	}
+	
+	function downloadReprot() {
+		var sql = 'select * from week_reports where add_time > "' +  document.getElementById('date').value + ' 00:00:00"';
+		downloadFileBySQL(sql);
+	}
+	
+	function downloadFileBySQL(sql) {
+		var _url = '/make_db_excel';
 		mui.getJSON(_url, {sql: sql}, function(data) {
 				//获得服务器响应
-				if (!data['success']) {
+				if (data['success']) {
+					mui.toast('make excel ok');
+					//下载
+					mui('#filePath')[0].value = data['filePath'];
+					mui('#fileName')[0].value = data['fileName'];
+					mui('#downloadForm')[0].submit();
+				} else {
 					mui.alert(JSON.stringify(data['err']),'错误','好的',null,'div');
-				} 
+				}
 			}
 		);
 	}
+	
+//	function fileModelDownload(filePath, fileName) {
+//		var form = document.createElement('form'); //定义一个form表单
+//		form.attr('style', 'display:none'); //在form表单中添加查询参数
+//		form.attr('target', '');
+//		form.attr('method', 'get');
+//		form.attr('action', "/download_db_excel");
+//		
+//		var input1 = document.createElement('input');
+//		input1.attr('type', 'hidden');
+//		input1.attr('name', 'fileName');
+//		input1.attr('value', fileName);
+//		
+//		var input2 = document.createElement('input');
+//		input2.attr('type', 'hidden');
+//		input2.attr('name', 'filePath');
+//		input2.attr('value', filePath);
+//		
+//		mui('.mui-content')[0].append(form); //将表单放置在web中
+//		form.append(input1); //将查询参数控件提交到表单上
+//		form.submit();
+//	}
 
 </script>
 </html>

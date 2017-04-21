@@ -509,12 +509,13 @@ app.get('/project_plan_get', function (req, res) {
 	});
 })
 
-app.get('/download_db_excel', function(req, res) {
+app.get('/make_db_excel', function(req, res) {
+
 	selectSQL = req.query.sql;
 	db.query(selectSQL, function(err, rows) {
 
 		if (err) {
-			response = {
+			var response = {
 				success: false,
 				err: err
 			}
@@ -550,28 +551,39 @@ app.get('/download_db_excel', function(req, res) {
 
 			//将文件内容插入新的文件中
 			var fileName = new Date().getTime()+ '.xlsx';
-			fs.writeFile(__dirname +'/DB/excel/' + 'dbBuffer.xlsx',buffer,{'flag':'w'}, function(err) {
+			var filePath = __dirname +'/DB/excel/' + fileName;
+			fs.writeFile(filePath,buffer,{'flag':'w'}, function(err) {
 				if (err) {
-					response = {
+					var response = {
 						success: false,
 						err: err
 					}
 					res.send(JSON.stringify(response));
 				} else {
-					var filePath = __dirname + '/DB/excel/' + 'dbBuffer.xlsx';
+					
 					console.log("下载 请求");
-					res.download(filePath,fileName);
+					var response = {
+						success: true,
+						filePath: filePath,
+						fileName: fileName
+					}
+					res.send(JSON.stringify(response));
+					// res.download(filePath,fileName);
 					// fs.unlink(filePath);
 				}
 				
 			});
-		}
-
-		
-
-		
+		}		
 	});
 })
+
+app.get('/download_db_excel', function(req, res) {
+	var filePath = req.query.filePath;
+	var fileName = req.query.fileName;
+	res.download(filePath, fileName);
+})
+
+
 
 app.get('/test', function (req, res) {
 	var myDate = new Date();
