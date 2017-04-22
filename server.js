@@ -6,7 +6,6 @@ var fs = require('fs');
 
 var app = express();
 app.use(express.static('http'));
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ dest: '/tmp/'}).array('file'));
 
@@ -507,6 +506,25 @@ app.get('/project_plan_get', function (req, res) {
 		if (err) console.log(err);
 		res.send(rows);
 	});
+})
+
+app.get('/db_operate', function(req, res) {
+	sql = req.query.sql;
+	db.query(sql, function(err, rows) {
+		if(err) {
+			var response = {
+				success: false,
+				err: err
+			}
+			res.send(JSON.stringify(response));
+		} else {
+			var response = {
+				success: true,
+				result: rows
+			}
+			res.send(JSON.stringify(response));
+		}
+	})
 })
 
 app.get('/make_db_excel', function(req, res) {

@@ -9,6 +9,15 @@
     <script type="text/javascript" charset="utf-8">
       	mui.init();
     </script>
+    <style>
+    		@font-face {
+    			font-family: 'noto-thin';
+    			font-weight: normal;
+    			font-style: normal;
+    			src: url("fonts/NotoSansCJKsc-Thin.ttf");
+    			src: url('fonts/NotoSansCJKsc-Thin.eot');
+    		}
+    </style>
 </head>
 <body>
 	
@@ -59,42 +68,34 @@
 	}
 	
 	mui.ready(function() {
-		databaseID = localStorage.id;
-		project = localStorage.project;
-		submitter = localStorage.submitter;
-		importance = localStorage.importance;
-		completed = localStorage.completed;
-		issures = localStorage.issures;
-		plan = localStorage.plan;
+		databaseID 	= localStorage.id;
+		project 		= localStorage.project;
+		submitter 	= localStorage.submitter;
+		importance 	= localStorage.importance;
+		completed 	= localStorage.completed;
+		issures 		= localStorage.issures;
+		plan 		= localStorage.plan;
 		
 		document.getElementById('detail').innerHTML = 
-			"项目代号：" + localStorage.project + "\n" +
-			"提交人：" + localStorage.submitter + "\n" +
-			"提交时间：" + localStorage.add_time + "\n\n" +
-			"本周要重点报告的工作：\n" + localStorage.importance + "\n\n" +
-			"本周日常工作完成情况：\n" + localStorage.completed + "\n\n" +
-			"存在的问题：\n" + localStorage.issures + "\n\n" +
-			"下周重点工作计划：\n" + localStorage.plan;
+			"项目代号：" 				+ localStorage.project 		+ "\n" +
+			"提交人：" 				+ localStorage.submitter 	+ "\n" +
+			"提交时间："				+ localStorage.add_time 		+ "\n\n" +
+			"本周要重点报告的工作：\n" + localStorage.importance 	+ "\n\n" +
+			"本周日常工作完成情况：\n" + localStorage.completed 	+ "\n\n" +
+			"存在的问题：\n" 			+ localStorage.issures 		+ "\n\n" +
+			"下周重点工作计划：\n" 	+ localStorage.plan;
 			
-		localStorage.removeItem('id');
-		localStorage.removeItem('project');
-		localStorage.removeItem('submitter');
-		localStorage.removeItem('add_time');
-		localStorage.removeItem('importance');
-		localStorage.removeItem('completed');
-		localStorage.removeItem('issures');
-		localStorage.removeItem('plan');
 	});
 	
 	window.onabort = function() {
-		localStorage.removeItem('id');
-		localStorage.removeItem('project');
-		localStorage.removeItem('submitter');
-		localStorage.removeItem('add_time');
-		localStorage.removeItem('importance');
-		localStorage.removeItem('completed');
-		localStorage.removeItem('issures');
-		localStorage.removeItem('plan');
+		localStorage.removeItem('id'			);
+		localStorage.removeItem('project'		);
+		localStorage.removeItem('submitter'	);
+		localStorage.removeItem('add_time'	);
+		localStorage.removeItem('importance'	);
+		localStorage.removeItem('completed'	);
+		localStorage.removeItem('issures'		);
+		localStorage.removeItem('plan'		);
 	}
 	
 	function deleteReport() {

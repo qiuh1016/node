@@ -24,11 +24,24 @@
 
 	<div class="mui-content">
 		<br>
-		<!--sql-->
+			
+		<!--sql operate-->
 		<form>
 			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
 				<p>SQL语句：</p>
-				<input type="text" id="sql" name="sql" class="mui-input-clear" style="font-size: 13px; color: #555555;">
+				<input type="text" id="sql_operate" name="sql_operate" class="mui-input-clear" style="font-size: 13px; color: #555555;">
+			</div>
+			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="db_operate()">操作</button>
+			</div>
+			<br>
+		</form>
+			
+		<!--sql excel download-->
+		<form>
+			<div class="mui-input-row" style="margin: 0px 10px 0px 10px;">
+				<p>Select SQL语句：</p>
+				<input type="text" id="sql_excel" name="sql_excel" class="mui-input-clear" style="font-size: 13px; color: #555555;">
 			</div>
 			<div class="mui-button-row" style="margin: 0px 10px 0px 10px;">
 				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="downloadExcel()">下载</button>
@@ -71,14 +84,28 @@
 
 	window.onload = function() {
 		if (localStorage.permission > 1) {
-			mui.alert('您没有下载数据库文件的权限','提示','好的',function (e) {
+			mui.alert('您没有操作数据库的权限','提示','好的',function (e) {
 			   mui.back();
 			},'div')
 		}
 	}
 	
+	function db_operate() {
+		var sql = document.getElementById('sql_operate').value;
+		var _url = '/db_operate';
+		mui.getJSON(_url, {sql: sql}, function(data) {
+				//获得服务器响应
+				if (data['success']) {
+					mui.alert(JSON.stringify(data['result']),'成功','好的',null,'div');
+				} else {
+					mui.alert(JSON.stringify(data['err']),'错误','好的',null,'div');
+				}
+			}
+		);
+	}
+	
 	function downloadExcel() {
-		var sql = document.getElementById('sql').value;
+		var sql = document.getElementById('sql_excel').value;
 		downloadFileBySQL(sql);
 	}
 	
@@ -103,7 +130,7 @@
 			}
 		);
 	}
-	
+
 //	function fileModelDownload(filePath, fileName) {
 //		var form = document.createElement('form'); //定义一个form表单
 //		form.attr('style', 'display:none'); //在form表单中添加查询参数
